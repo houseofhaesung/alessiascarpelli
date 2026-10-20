@@ -6,6 +6,16 @@
   <title>About — Alessia Scarpelli</title>
   <meta name="description" content="Alessia Scarpelli — fashion designer and pattern maker. About Alessia and Stacy Wear." />
 
+  <!-- Favicon
+       favicon.svg: black A on light browser tabs, white A on dark tabs (switches automatically)
+       favicon.ico / favicon-32.png: fallback for browsers without SVG favicons (black version)
+       apple-touch-icon / favicon-192: home-screen icons on iPhone and Android -->
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
   <link rel="preload" href="fonts/ABCAreal-Regular.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/FacultyGlyphic-Regular.woff2" as="font" type="font/woff2" crossorigin />
 
@@ -197,7 +207,7 @@
     <section id="stacy" class="frame" data-tab="stacy">
       <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[25vw]">
         <p class="lead">Meet Stacy: A Manifesto of Identity and Craftsmanship</p>
-        <a href="https://stacywear.it/" target="_blank" rel="noopener" class="inline-block mt-[1.2vh] font-bold text-[clamp(18px,min(1.67vw,2.96vh),32px)] hover:text-pink">https://stacywear.it/</a>
+        <a href="https://stacywear.it/" target="_blank" rel="noopener" class="inline-block mt-[1.2vh] font-bold text-[clamp(18px,min(1.67vw,2.96vh),32px)] underline-offset-4 hover:underline hover:text-pink focus-visible:underline">https://stacywear.it/</a>
         <img src="images/stacy-mark.png" alt="Stacy Wear" class="mt-[2.4vh] w-[clamp(140px,13.4vw,258px)] h-auto" />
         <p class="body">Stacy Wear is an emotional project inspired by the rebellious spirit of the late ’70s punk movement and the raw energy of the late ’80s and early ’90s rave culture. Alessia reinterprets these influences with a contemporary twist, creating designs that speak to individuality and self-expression.<br>Her unique vision quickly resonated with her audience, who see her pieces as more than just clothing. Her designs are a form of self-expression —symbols of identity and belonging. The brand embraces the marginal, elevating it and redefining beauty by blurring the lines of what is considered “different” or distant from us.</p>
       </div>
@@ -218,7 +228,11 @@
                    lg:max-w-none lg:mt-[2.4vh] lg:text-[clamp(13px,min(1.04vw,1.85vh),20px)] lg:leading-[1.4]; }
 
     /* mobile: single photo full-bleed, several photos as a swipe row */
-    .media        { @apply mt-8 lg:mt-0 lg:absolute lg:inset-0; }
+    /* desktop: the image layer covers the whole frame, so it must let clicks and text selection
+       pass through to the copy; only the photos themselves take the pointer */
+    .media        { @apply mt-8 lg:mt-0 lg:absolute lg:inset-0 lg:pointer-events-none; }
+    .media .fig   { @apply lg:pointer-events-auto; }
+    .copy         { @apply relative lg:z-10 select-text; }
     .media .single{ @apply aspect-[4/5] sm:aspect-[3/2] lg:aspect-auto; }
     .media.row    { @apply flex gap-3 overflow-x-auto snap-x snap-mandatory px-5 sm:px-8
                            [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
