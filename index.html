@@ -81,16 +81,16 @@
   <header class="fixed inset-x-0 top-0 z-50 bg-white">
     <!-- desktop -->
     <nav class="hidden lg:flex items-center h-[var(--header)] px-[var(--pad)] relative">
-      <ul class="flex gap-[2.4vw] text-[clamp(16px,1.46vw,28px)] font-bold">
-        <li><a href="#" class="hover:text-pink">WORK</a></li>
-        <li><a href="#" class="hover:text-pink" aria-current="page">ABOUT</a></li>
+      <ul class="flex gap-[2.4vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+        <li><a href="#" class="text-pink transition-colors hover:text-ink">WORK</a></li>
+        <li><a href="#" class="text-pink transition-colors hover:text-ink" aria-current="page">ABOUT</a></li>
       </ul>
       <a href="#" class="absolute left-[var(--col)] top-1/2 -translate-y-1/2" aria-label="Alessia Scarpelli — home">
         <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(240px,24.6vw,480px)] h-auto" />
       </a>
-      <ul class="ml-auto flex gap-[1.9vw] text-[clamp(16px,1.46vw,28px)] font-bold">
-        <li><a href="#" class="hover:text-pink">PRESS</a></li>
-        <li><a href="#" class="hover:text-pink">CONTACT</a></li>
+      <ul class="ml-auto flex gap-[1.9vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+        <li><a href="#" class="text-pink transition-colors hover:text-ink">PRESS</a></li>
+        <li><a href="#" class="text-pink transition-colors hover:text-ink">CONTACT</a></li>
       </ul>
     </nav>
     <!-- mobile -->
@@ -98,7 +98,7 @@
       <a href="#" class="block" aria-label="Alessia Scarpelli — home">
         <img src="images/logo.png" alt="Alessia Scarpelli" class="mx-auto w-[min(86vw,420px)] h-auto" />
       </a>
-      <div class="mt-4 flex justify-between text-[13px] sm:text-[15px] font-bold">
+      <div class="mt-4 flex justify-between text-[13px] sm:text-[15px] font-bold text-pink">
         <div class="flex gap-5"><a href="#">WORK</a><a href="#" aria-current="page">ABOUT</a></div>
         <div class="flex gap-5"><a href="#">PRESS</a><a href="#">CONTACT</a></div>
       </div>
@@ -108,16 +108,20 @@
   <!-- ================= PAGE TITLE ================= -->
   <!-- desktop: pinned top-left, copy scrolls underneath it -->
   <div class="hidden lg:block fixed left-0 top-0 z-40 w-[var(--col)] h-[31vh] pl-[var(--pad)] pointer-events-none">
-    <h1 class="absolute top-[13vh] font-display leading-[0.9] text-[clamp(52px,3.85vw,80px)]">ABOUT</h1>
-    <div class="absolute top-[21vh] font-display leading-none text-[clamp(26px,2.2vw,44px)] whitespace-nowrap pointer-events-auto">
-      <a href="#alessia" class="tab" data-tab="alessia">About Alessia</a><span aria-hidden="true">&nbsp;|&nbsp;</span><a href="#stacy" class="tab" data-tab="stacy">Stacy Wear</a>
+    <!-- Tabs sit right under ABOUT, so the gap stays the same if either size changes.
+         mt 1.108vw = 21.3px at 1920 → visible gap between the letters = 20pt -->
+    <div class="absolute top-[13vh]">
+      <h1 class="font-display leading-[0.9] text-[clamp(31pt,3.056vw,48pt)]">ABOUT</h1>
+      <div class="mt-[clamp(14px,1.108vw,24px)] font-display leading-none text-[clamp(17pt,1.944vw,30pt)] whitespace-nowrap pointer-events-auto">
+        <a href="#alessia" class="tab" data-tab="alessia">About Alessia</a><span aria-hidden="true">&nbsp;|&nbsp;</span><a href="#stacy" class="tab" data-tab="stacy">Stacy Wear</a>
+      </div>
     </div>
   </div>
   <!-- mobile -->
   <div class="lg:hidden pt-[124px] sm:pt-[132px] px-5 sm:px-8">
-    <h1 class="font-display text-[clamp(44px,13vw,72px)] leading-[0.9]">ABOUT</h1>
+    <h1 class="font-display text-[clamp(27pt,10.3vw,43pt)] leading-[0.9]">ABOUT</h1>
   </div>
-  <div class="lg:hidden sticky top-[96px] sm:top-[104px] z-40 px-5 sm:px-8 py-2 bg-white font-display text-[clamp(22px,6.4vw,34px)] leading-tight">
+  <div class="lg:hidden sticky top-[96px] sm:top-[104px] z-40 px-5 sm:px-8 py-2 bg-white font-display text-[clamp(15pt,5.6vw,23pt)] leading-tight">
     <a href="#alessia" class="tab" data-tab="alessia">About Alessia</a><span aria-hidden="true">&nbsp;|&nbsp;</span><a href="#stacy" class="tab" data-tab="stacy">Stacy Wear</a>
   </div>
 
