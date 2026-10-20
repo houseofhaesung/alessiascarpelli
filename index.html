@@ -6,10 +6,8 @@
   <title>About — Alessia Scarpelli</title>
   <meta name="description" content="Alessia Scarpelli — fashion designer and pattern maker. About Alessia and Stacy Wear." />
 
-  <!-- Fonts: Jost (logo / headings) + Helvetica stack (body) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="preload" href="fonts/ABCAreal-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/FacultyGlyphic-Regular.woff2" as="font" type="font/woff2" crossorigin />
 
   <!-- Tailwind (Play CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -19,477 +17,216 @@
         extend: {
           colors: { ink: '#0b0b0b', pink: '#FF3686' },
           fontFamily: {
-            display: ['Jost', 'Futura', 'Avenir Next', 'sans-serif'],
-            sans: ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+            display: ['"Faculty Glyphic"', 'serif'],
+            sans: ['"ABC Areal"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
           },
         },
       },
     };
   </script>
 
-  <!-- Motion (the vanilla-JS build of Framer Motion: same spring engine, no React needed) -->
-  <script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
-
   <style>
-    :root { --pad: clamp(20px, 3.6vw, 72px); --col: 36.1vw; }
+    @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Medium.woff2")  format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+    @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Bold.woff2")    format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: "Faculty Glyphic"; src: url("fonts/FacultyGlyphic-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+
+    :root { --pad: clamp(20px, 3.6vw, 72px); --col: 36.1vw; --header: clamp(72px, 10.4vh, 116px); }
     html, body { background: #fff; color: #0b0b0b; }
     body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    b, strong { font-weight: 700; }
+    img { display: block; }
 
-    /* Desktop: one scroll "frame" per Figma frame */
+    /* ---------- Desktop: each section is one Figma frame (1920×1080) ---------- */
     @media (min-width: 1024px) {
-      html { scroll-snap-type: y mandatory; }
-      .snap-point { scroll-snap-align: start; scroll-snap-stop: always; }
+      .frame { position: relative; height: 100vh; min-height: 640px; }
+      /* image boxes come from the Figma frame, set per figure as --l --t --r --b */
+      .fig { position: absolute; left: var(--l); top: var(--t); right: var(--r); bottom: var(--b); }
+      .fig img { width: 100%; height: 100%; object-fit: cover; }
     }
-
-    /* Word wrappers used for the text reveal */
-    .w { display: inline-block; will-change: transform, opacity; }
-    .wm { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
-
-    /* Image layers */
-    .fig { position: absolute; }
-    .fig .par, .fig .clip { position: absolute; inset: 0; }
-    .fig .clip { overflow: hidden; clip-path: inset(0 0 0 0); }
-    .fig img { width: 100%; height: 100%; object-fit: cover; display: block; transform-origin: 50% 50%; will-change: transform; }
-
-    .panel, .group { visibility: hidden; }
-    .panel.is-on, .group.is-on { visibility: visible; }
-
-    /* Nav underline (driven by Motion springs) */
-    .ul { position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; background: currentColor; transform: scaleX(0); transform-origin: left center; }
-
-    /* Before JS runs, keep animated things hidden to avoid a flash */
-    .js-intro { opacity: 0; }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-snap-type: none; }
+    /* Mobile / tablet */
+    @media (max-width: 1023.98px) {
+      .fig img { width: 100%; height: 100%; object-fit: cover; }
+      .frame { scroll-margin-top: 150px; }
     }
   </style>
 </head>
 
 <body class="font-sans">
 
-  <!-- ============ HEADER ============ -->
+  <!-- ================= HEADER ================= -->
   <header class="fixed inset-x-0 top-0 z-50 bg-white">
     <!-- desktop -->
-    <nav class="hidden lg:flex items-center h-[clamp(72px,10.4vh,116px)] px-[var(--pad)] relative">
-      <ul class="flex gap-[2.4vw] text-[clamp(16px,1.46vw,28px)] font-bold tracking-[0.005em]">
-        <li class="js-intro js-nav"><a href="#" class="nav-link relative inline-block">WORK<span class="ul"></span></a></li>
-        <li class="js-intro js-nav"><a href="#" class="nav-link relative inline-block" aria-current="page">ABOUT<span class="ul"></span></a></li>
+    <nav class="hidden lg:flex items-center h-[var(--header)] px-[var(--pad)] relative">
+      <ul class="flex gap-[2.4vw] text-[clamp(16px,1.46vw,28px)] font-bold">
+        <li><a href="#" class="hover:text-pink">WORK</a></li>
+        <li><a href="#" class="hover:text-pink" aria-current="page">ABOUT</a></li>
       </ul>
-      <a href="#" id="logo" class="js-intro absolute left-[var(--col)] font-display font-normal uppercase leading-none whitespace-nowrap text-[clamp(30px,2.95vw,58px)] tracking-[0.01em]">
-        Alessia Scarpelli
+      <a href="#" class="absolute left-[var(--col)] top-1/2 -translate-y-1/2" aria-label="Alessia Scarpelli — home">
+        <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(240px,24.6vw,480px)] h-auto" />
       </a>
-      <ul class="ml-auto flex gap-[1.9vw] text-[clamp(16px,1.46vw,28px)] font-bold tracking-[0.005em]">
-        <li class="js-intro js-nav"><a href="#" class="nav-link relative inline-block">PRESS<span class="ul"></span></a></li>
-        <li class="js-intro js-nav"><a href="#" class="nav-link relative inline-block">CONTACT<span class="ul"></span></a></li>
+      <ul class="ml-auto flex gap-[1.9vw] text-[clamp(16px,1.46vw,28px)] font-bold">
+        <li><a href="#" class="hover:text-pink">PRESS</a></li>
+        <li><a href="#" class="hover:text-pink">CONTACT</a></li>
       </ul>
     </nav>
     <!-- mobile -->
     <nav class="lg:hidden px-5 pt-5 pb-3">
-      <a href="#" class="js-intro block text-center font-display uppercase leading-none text-[clamp(26px,8vw,44px)] tracking-[0.01em]">Alessia Scarpelli</a>
+      <a href="#" class="block" aria-label="Alessia Scarpelli — home">
+        <img src="images/logo.png" alt="Alessia Scarpelli" class="mx-auto w-[min(86vw,420px)] h-auto" />
+      </a>
       <div class="mt-4 flex justify-between text-[13px] sm:text-[15px] font-bold">
-        <div class="flex gap-5"><a class="js-intro" href="#">WORK</a><a class="js-intro" href="#" aria-current="page">ABOUT</a></div>
-        <div class="flex gap-5"><a class="js-intro" href="#">PRESS</a><a class="js-intro" href="#">CONTACT</a></div>
+        <div class="flex gap-5"><a href="#">WORK</a><a href="#" aria-current="page">ABOUT</a></div>
+        <div class="flex gap-5"><a href="#">PRESS</a><a href="#">CONTACT</a></div>
       </div>
     </nav>
   </header>
 
-  <!-- ============ DESKTOP: sticky stage, 6 frames ============ -->
-  <section id="stage-wrap" class="hidden lg:block relative" style="height:600vh" aria-label="About">
-    <!-- snap points, one per frame -->
-    <div aria-hidden="true">
-      <div class="snap-point absolute inset-x-0 h-screen" style="top:0"></div>
-      <div class="snap-point absolute inset-x-0 h-screen" style="top:100vh"></div>
-      <div class="snap-point absolute inset-x-0 h-screen" style="top:200vh"></div>
-      <div class="snap-point absolute inset-x-0 h-screen" style="top:300vh"></div>
-      <div class="snap-point absolute inset-x-0 h-screen" style="top:400vh"></div>
-      <div class="snap-point absolute inset-x-0 h-screen" style="top:500vh"></div>
+  <!-- ================= PAGE TITLE ================= -->
+  <!-- desktop: pinned top-left, copy scrolls underneath it -->
+  <div class="hidden lg:block fixed left-0 top-0 z-40 w-[var(--col)] h-[31vh] bg-white pl-[var(--pad)] pointer-events-none">
+    <h1 class="absolute top-[13vh] font-display leading-[0.9] text-[clamp(52px,3.85vw,80px)]">ABOUT</h1>
+    <div class="absolute top-[21vh] font-display leading-none text-[clamp(26px,2.2vw,44px)] whitespace-nowrap pointer-events-auto">
+      <a href="#alessia" class="tab" data-tab="alessia">About Alessia</a><span class="mx-[0.15em]">|</span><a href="#stacy" class="tab" data-tab="stacy">Stacy Wear</a>
     </div>
+  </div>
+  <!-- mobile -->
+  <div class="lg:hidden pt-[124px] sm:pt-[132px] px-5 sm:px-8">
+    <h1 class="font-display text-[clamp(44px,13vw,72px)] leading-[0.9]">ABOUT</h1>
+  </div>
+  <div class="lg:hidden sticky top-[96px] sm:top-[104px] z-40 px-5 sm:px-8 py-2 bg-white font-display text-[clamp(22px,6.4vw,34px)] leading-tight">
+    <a href="#alessia" class="tab" data-tab="alessia">About Alessia</a><span class="mx-1">|</span><a href="#stacy" class="tab" data-tab="stacy">Stacy Wear</a>
+  </div>
 
-    <div id="stage" class="sticky top-0 h-screen w-full overflow-hidden">
-      <!-- images live here (behind the header) -->
-      <div id="figs" class="absolute inset-0"></div>
+  <!-- ================= CONTENT =================
+       Text sizes scale with both width and height so a frame always fits the screen.
+       Figure boxes: --l --t --r --b measured from the 1920×1080 Figma frames. -->
+  <main class="pb-20 lg:pb-0">
 
-      <!-- left column -->
-      <div class="absolute left-0 top-0 h-full w-[var(--col)] pl-[var(--pad)]">
-        <h1 id="title" class="absolute top-[13vh] font-display font-normal leading-[0.9] text-[clamp(52px,3.85vw,80px)] tracking-[0.005em]" aria-label="About">ABOUT</h1>
-        <div id="tabs" class="js-intro absolute top-[20.2vh] font-display font-normal leading-none text-[clamp(26px,2.2vw,44px)] whitespace-nowrap">
-          <button class="tab" data-tab="alessia" data-go="0">About Alessia</button><span class="mx-[0.12em] font-sans font-light">|</span><button class="tab" data-tab="stacy" data-go="5">Stacy Wear</button>
-        </div>
-        <div id="panels" class="absolute left-[var(--pad)] right-0 top-[39.5vh] bottom-0"></div>
+    <!-- 01 · intro-14 -->
+    <section id="alessia" class="frame" data-tab="alessia">
+      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[24vw]">
+        <p class="lead">My name is <b>Alessia</b> <span class="whitespace-nowrap"><b>Scarpelli</b>,</span> and I am a fashion designer and pattern maker with a deep-rooted passion for creativity, craftsmanship and self-expression.</p>
+        <p class="body">Fashion has been part of my life for as long as I can remember. Even as a child, I was already trying to make my own clothes. What began as a personal passion gradually became my profession, and after more than 15 years in the industry, I still find the same excitement and inspiration in what I do. I love fashion because it allows us to express who we are and bring art into our everyday lives. To me, clothing is never superficial: it has the power to make people feel good, communicate identity and tell stories.</p>
       </div>
-    </div>
-  </section>
+      <div class="media">
+        <figure class="fig single" style="--l:36.09%;--t:25.09%;--r:0%;--b:0%">
+          <img src="images/about-01.jpg" alt="Runway rehearsal with models among red chairs" />
+        </figure>
+      </div>
+    </section>
 
-  <!-- ============ MOBILE / TABLET: flowing chapters ============ -->
-  <section id="flow" class="lg:hidden pt-[124px] sm:pt-[132px] pb-20 px-5 sm:px-8">
-    <h1 class="js-intro font-display text-[clamp(44px,13vw,72px)] leading-[0.9]">ABOUT</h1>
-    <div id="mtabs" class="js-intro sticky top-[96px] sm:top-[104px] z-40 -mx-5 sm:-mx-8 px-5 sm:px-8 py-2 bg-white/90 backdrop-blur font-display text-[clamp(22px,6.4vw,34px)] leading-tight">
-      <button class="tab" data-tab="alessia" data-go="0">About Alessia</button><span class="mx-1 font-sans font-light">|</span><button class="tab" data-tab="stacy" data-go="5">Stacy Wear</button>
-    </div>
-    <div id="chapters" class="mt-10 space-y-24 sm:space-y-28"></div>
-  </section>
+    <!-- 02 · intro-15 -->
+    <section class="frame" data-tab="alessia">
+      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[25.5vw]">
+        <p class="lead">Throughout my career, I have explored many different areas of the fashion industry, developing a broad understanding of the entire creative and production process, <b>from the initial concept to the finished garment.</b></p>
+        <p class="body lg:w-[85%]">My approach always begins with understanding the essence of a brand, a project or a person, identifying its strengths and expanding its vision through a creative and thoughtful approach. I then translate that vision into practical solutions, combining design and technical expertise with precision, research, craftsmanship and a strong commitment to sustainability.</p>
+      </div>
+      <div class="media row">
+        <figure class="fig" style="--l:36.09%;--t:25.09%;--r:35.47%;--b:0%">
+          <img src="images/about-02a.jpg" alt="Stacy collection overview moodboard" loading="lazy" />
+        </figure>
+        <figure class="fig" style="--l:65.47%;--t:25.09%;--r:0%;--b:0%">
+          <img src="images/about-02b.jpg" alt="Alessia choosing fabric rolls" loading="lazy" />
+        </figure>
+      </div>
+    </section>
+
+    <!-- 03 · intro-16 -->
+    <section class="frame" data-tab="alessia">
+      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[22.5vw]">
+        <p class="lead">My background in both <b>fashion design and pattern making</b> allows me to develop garments that are not only visually compelling but also <b>technically feasible.</b></p>
+        <p class="body lg:w-[88%]">My knowledge of CLO3D further enables me to explore ideas, develop patterns and bring garments to life digitally. I enjoy finding creative solutions to challenges and guiding projects from concept to completion, bringing together imagination, ingenuity and a comprehensive understanding of garment development.</p>
+      </div>
+      <div class="media row three">
+        <figure class="fig" style="--l:33.80%;--t:30.09%;--r:45.63%;--b:5%">
+          <img src="images/about-03a.jpg" alt="3D garment: pink faux-fur coat" loading="lazy" />
+        </figure>
+        <figure class="fig" style="--l:55.00%;--t:30.09%;--r:24.53%;--b:5%">
+          <img src="images/about-03b.jpg" alt="3D garment: black tee and metallic trousers" loading="lazy" />
+        </figure>
+        <figure class="fig" style="--l:76.04%;--t:30.09%;--r:3.39%;--b:5%">
+          <img src="images/about-03c.jpg" alt="3D garment: long grey faux-fur coat" loading="lazy" />
+        </figure>
+      </div>
+    </section>
+
+    <!-- 04 · intro-17 -->
+    <section class="frame" data-tab="alessia">
+      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[19vw]">
+        <p class="lead">Beyond the technical and creative aspects of my work, fashion also has a deeply <b>personal and political meaning for</b> <span class="whitespace-nowrap"><b>me</b>.</span></p>
+        <p class="body">I see it as a powerful tool for self-expression, a way to challenge conventions and create a visual identity that reflects the unique story of a brand or an individual. I believe that creativity should go hand in hand with ethical responsibility, sustainability and inclusivity.</p>
+      </div>
+      <div class="media">
+        <figure class="fig single" style="--l:36.09%;--t:12.41%;--r:0%;--b:0%">
+          <img src="images/about-04.jpg" alt="Group portrait in colourful faux-fur pieces" loading="lazy" />
+        </figure>
+      </div>
+    </section>
+
+    <!-- 05 · intro-18 -->
+    <section class="frame" data-tab="alessia">
+      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[21vw]">
+        <p class="lead">I am a curious and sensitive person, deeply in love with <b>art and</b> <span class="whitespace-nowrap"><b>nature</b>,</span> and passionate about <b>protecting animals and the environment.</b></p>
+        <p class="body">Through my work, I hope to contribute to a fashion industry where freedom of expression meets ethical and sustainable practices, and where creativity becomes a force for positive change. My goal is to help make fashion a more inclusive, thoughtful and imaginative space, one that celebrates individuality while respecting the world we live in.</p>
+      </div>
+      <div class="media row">
+        <figure class="fig" style="--l:36.25%;--t:25.65%;--r:35.73%;--b:0%">
+          <img src="images/about-05a.jpg" alt="Recycled plastic pieces" loading="lazy" />
+        </figure>
+        <figure class="fig" style="--l:65.00%;--t:25.65%;--r:0%;--b:0%">
+          <img src="images/about-05b.jpg" alt="Fitting a top made of recycled plastic" loading="lazy" />
+        </figure>
+      </div>
+    </section>
+
+    <!-- 06 · intro-19 -->
+    <section id="stacy" class="frame" data-tab="stacy">
+      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[25vw]">
+        <p class="lead">Meet Stacy: A Manifesto of Identity and Craftsmanship</p>
+        <a href="https://stacywear.it/" target="_blank" rel="noopener" class="inline-block mt-[1.2vh] font-bold text-[clamp(18px,min(1.67vw,2.96vh),32px)] hover:text-pink">https://stacywear.it/</a>
+        <img src="images/stacy-mark.png" alt="Stacy Wear" class="mt-[2.4vh] w-[clamp(140px,13.4vw,258px)] h-auto" />
+        <p class="body">Stacy Wear is an emotional project inspired by the rebellious spirit of the late ’70s punk movement and the raw energy of the late ’80s and early ’90s rave culture. Alessia reinterprets these influences with a contemporary twist, creating designs that speak to individuality and self-expression.<br>Her unique vision quickly resonated with her audience, who see her pieces as more than just clothing. Her designs are a form of self-expression —symbols of identity and belonging. The brand embraces the marginal, elevating it and redefining beauty by blurring the lines of what is considered “different” or distant from us.</p>
+      </div>
+      <div class="media">
+        <figure class="fig single" style="--l:36.09%;--t:25.09%;--r:0%;--b:0%">
+          <img src="images/about-06.jpg" alt="Stacy Wear campaign, black and white group photo" loading="lazy" />
+        </figure>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Shared type + media styles (kept here so each section above stays short) -->
+  <style type="text/tailwindcss">
+    .lead { @apply text-[clamp(20px,5.6vw,30px)] leading-[1.375] max-w-[34ch]
+                   lg:max-w-none lg:text-[clamp(18px,min(1.67vw,2.96vh),34px)]; }
+    .body { @apply mt-5 text-[15px] sm:text-base leading-[1.45] max-w-[46ch]
+                   lg:max-w-none lg:mt-[2.4vh] lg:text-[clamp(13px,min(1.04vw,1.85vh),20px)] lg:leading-[1.4]; }
+
+    /* mobile: single photo full-bleed, several photos as a swipe row */
+    .media        { @apply mt-8 lg:mt-0 lg:absolute lg:inset-0; }
+    .media .single{ @apply aspect-[4/5] sm:aspect-[3/2] lg:aspect-auto; }
+    .media.row    { @apply flex gap-3 overflow-x-auto snap-x snap-mandatory px-5 sm:px-8
+                           [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
+                           lg:block lg:overflow-visible lg:p-0; }
+    .media.row .fig        { @apply shrink-0 snap-start w-[78%] sm:w-[48%] aspect-[3/4] lg:w-auto lg:aspect-auto; }
+    .media.row.three .fig  { @apply w-[72%] sm:w-[40%] lg:w-auto; }
+    main > section + section { @apply mt-24 sm:mt-28 lg:mt-0; }
+
+    .tab           { @apply hover:text-pink; }
+    .tab.is-active { @apply text-pink; }
+  </style>
 
   <script>
-  /* =================================================================
-     CONTENT — one entry per Figma frame (intro-14 … intro-19)
-     Image boxes are measured from the 1920×1080 frames:
-     [left, top, right, bottom] in px. Right/bottom of 1920/1080 = bleed.
-     ================================================================= */
-  const STEPS = [
-    {
-      tab: 'alessia', lead: 'w-[23.5vw]', body: 'w-[23.5vw]',
-      leadHTML: 'My name is <b>Alessia</b> <span class="whitespace-nowrap"><b>Scarpelli</b>,</span> and I am a fashion designer and pattern maker with a deep-rooted passion for creativity, craftsmanship and self-expression.',
-      bodyHTML: 'Fashion has been part of my life for as long as I can remember. Even as a child, I was already trying to make my own clothes. What began as a personal passion gradually became my profession, and after more than 15 years in the industry, I still find the same excitement and inspiration in what I do. I love fashion because it allows us to express who we are and bring art into our everyday lives. To me, clothing is never superficial: it has the power to make people feel good, communicate identity and tell stories.',
-      images: [{ src: 'images/about-01.jpg', alt: 'Runway rehearsal with models among red chairs', box: [693, 271, 1920, 1080] }],
-    },
-    {
-      tab: 'alessia', lead: 'w-[25vw]', body: 'w-[21.5vw]',
-      leadHTML: 'Throughout my career, I have explored many different areas of the fashion industry, developing a broad understanding of the entire creative and production process, <b>from the initial concept to the finished garment.</b>',
-      bodyHTML: 'My approach always begins with understanding the essence of a brand, a project or a person, identifying its strengths and expanding its vision through a creative and thoughtful approach. I then translate that vision into practical solutions, combining design and technical expertise with precision, research, craftsmanship and a strong commitment to sustainability.',
-      images: [
-        { src: 'images/about-02a.jpg', alt: 'Stacy collection overview moodboard', box: [693, 271, 1239, 1080] },
-        { src: 'images/about-02b.jpg', alt: 'Alessia choosing fabric rolls', box: [1257, 271, 1920, 1080] },
-      ],
-    },
-    {
-      tab: 'alessia', lead: 'w-[22vw]', body: 'w-[19.5vw]',
-      leadHTML: 'My background in both <b>fashion design and pattern making</b> allows me to develop garments that are not only visually compelling but also <b>technically feasible.</b>',
-      bodyHTML: 'My knowledge of CLO3D further enables me to explore ideas, develop patterns and bring garments to life digitally. I enjoy finding creative solutions to challenges and guiding projects from concept to completion, bringing together imagination, ingenuity and a comprehensive understanding of garment development.',
-      images: [
-        { src: 'images/about-03a.jpg', alt: '3D garment: pink faux-fur coat', box: [649, 325, 1044, 1026] },
-        { src: 'images/about-03b.jpg', alt: '3D garment: black tee and metallic trousers', box: [1056, 325, 1449, 1026] },
-        { src: 'images/about-03c.jpg', alt: '3D garment: long grey faux-fur coat', box: [1460, 325, 1855, 1026] },
-      ],
-    },
-    {
-      tab: 'alessia', lead: 'w-[18.5vw]', body: 'w-[18vw]',
-      leadHTML: 'Beyond the technical and creative aspects of my work, fashion also has a deeply <b>personal and political meaning for</b> <span class="whitespace-nowrap"><b>me</b>.</span>',
-      bodyHTML: 'I see it as a powerful tool for self-expression, a way to challenge conventions and create a visual identity that reflects the unique story of a brand or an individual. I believe that creativity should go hand in hand with ethical responsibility, sustainability and inclusivity.',
-      images: [{ src: 'images/about-04.jpg', alt: 'Group portrait in colourful faux-fur pieces', box: [693, 134, 1920, 1080] }],
-    },
-    {
-      tab: 'alessia', lead: 'w-[20.5vw]', body: 'w-[20vw]',
-      leadHTML: 'I am a curious and sensitive person, deeply in love with <b>art and</b> <span class="whitespace-nowrap"><b>nature</b>,</span> and passionate about <b>protecting animals and the environment.</b>',
-      bodyHTML: 'Through my work, I hope to contribute to a fashion industry where freedom of expression meets ethical and sustainable practices, and where creativity becomes a force for positive change. My goal is to help make fashion a more inclusive, thoughtful and imaginative space, one that celebrates individuality while respecting the world we live in.',
-      images: [
-        { src: 'images/about-05a.jpg', alt: 'Recycled plastic pieces', box: [696, 277, 1234, 1080] },
-        { src: 'images/about-05b.jpg', alt: 'Fitting a top made of recycled plastic', box: [1248, 277, 1920, 1080] },
-      ],
-    },
-    {
-      tab: 'stacy', lead: 'w-[22vw]', body: 'w-[24.5vw]',
-      leadHTML: 'Meet Stacy: A Manifesto of Identity and Craftsmanship',
-      extraHTML: '<a href="https://stacywear.it/" target="_blank" rel="noopener" class="link-hover relative inline-block mt-[1.2vh] font-bold text-[clamp(18px,1.67vw,32px)]">https://stacywear.it/<span class="ul"></span></a><img src="images/stacy-mark.png" alt="Stacy Wear" class="block mt-[2.4vh] w-[clamp(140px,13.4vw,258px)] h-auto" />',
-      bodyHTML: 'Stacy Wear is an emotional project inspired by the rebellious spirit of the late ’70s punk movement and the raw energy of the late ’80s and early ’90s rave culture. Alessia reinterprets these influences with a contemporary twist, creating designs that speak to individuality and self-expression.<br>Her unique vision quickly resonated with her audience, who see her pieces as more than just clothing. Her designs are a form of self-expression —symbols of identity and belonging. The brand embraces the marginal, elevating it and redefining beauty by blurring the lines of what is considered “different” or distant from us.',
-      images: [{ src: 'images/about-06.jpg', alt: 'Stacy Wear campaign, black and white group photo', box: [693, 271, 1920, 1080] }],
-    },
-  ];
-
-  /* =================================================================
-     MOTION TOKENS — tuned like Framer's spring presets
-     ================================================================= */
-  const { animate, scroll, inView, stagger } = window.Motion;
-  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const PINK = '#FF3686', INK = '#0b0b0b';
-
-  const SPRING = {
-    text:   { type: 'spring', stiffness: 260, damping: 30, mass: 0.9 },  // snappy, no overshoot
-    image:  { type: 'spring', stiffness: 70,  damping: 20, mass: 1   },  // slow, heavy settle (Smart Animate feel)
-    hover:  { type: 'spring', stiffness: 300, damping: 24 },             // a small, bouncy "tick"
-    tab:    { type: 'spring', stiffness: 400, damping: 32 },
-  };
-  const EASE = {
-    reveal: [0.76, 0, 0.24, 1],   // in-out expo-ish: the curtain wipe
-    out:    [0.4, 0, 1, 1],       // ease-in for things leaving
-    soft:   [0.22, 1, 0.36, 1],   // ease-out quint
-  };
-  const T = (o) => (REDUCED ? { duration: 0 } : o);
-
-  /* -------- helpers -------- */
-  const el = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
-  const pct = (v, total) => (v / total * 100).toFixed(3) + '%';
-
-  // Wrap every word in <span class="wm"><span class="w">…</span></span>, keeping <b>, <br> etc.
-  function splitWords(root) {
-    const walk = (node) => {
-      [...node.childNodes].forEach((n) => {
-        if (n.nodeType === 3) {
-          const frag = document.createDocumentFragment();
-          n.textContent.split(/(\s+)/).forEach((part) => {
-            if (!part) return;
-            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
-            const m = document.createElement('span'); m.className = 'wm';
-            const w = document.createElement('span'); w.className = 'w'; w.textContent = part;
-            m.appendChild(w); frag.appendChild(m);
-          });
-          n.replaceWith(frag);
-        } else if (n.nodeType === 1 && n.tagName !== 'BR' && n.tagName !== 'IMG') walk(n);
-      });
-    };
-    walk(root);
-    return root.querySelectorAll('.w');
-  }
-
-  /* -------- tabs -------- */
-  function setTab(name, instant) {
-    document.querySelectorAll('.tab').forEach((b) => {
-      const on = b.dataset.tab === name;
-      b.classList.toggle('is-active', on);
-      animate(b, { color: on ? PINK : INK }, instant ? { duration: 0 } : T({ duration: 0.45, ease: EASE.soft }));
-    });
-  }
-
-  /* -------- hover: spring underline + subtle lift -------- */
-  function bindUnderline(link) {
-    const ul = link.querySelector('.ul');
-    if (!ul) return;
-    link.addEventListener('mouseenter', () => {
-      ul.style.transformOrigin = 'left center';
-      animate(ul, { scaleX: 1 }, T(SPRING.hover));
-    });
-    link.addEventListener('mouseleave', () => {
-      ul.style.transformOrigin = 'right center';
-      animate(ul, { scaleX: 0 }, T({ duration: 0.35, ease: EASE.reveal }));
-    });
-  }
-  function bindTabHover(b) {
-    b.addEventListener('mouseenter', () => { if (!b.classList.contains('is-active')) animate(b, { color: PINK, opacity: 0.75 }, T({ duration: 0.25 })); });
-    b.addEventListener('mouseleave', () => { if (!b.classList.contains('is-active')) animate(b, { color: INK, opacity: 1 }, T({ duration: 0.3 })); });
-    b.addEventListener('pointerdown', () => animate(b, { scale: 0.96 }, T(SPRING.hover)));
-    b.addEventListener('pointerup',   () => animate(b, { scale: 1 },    T(SPRING.hover)));
-    b.addEventListener('pointerleave',() => animate(b, { scale: 1 },    T(SPRING.hover)));
-  }
-  function bindImageHover(fig) {
-    const img = fig.querySelector('img');
-    fig.addEventListener('mouseenter', () => animate(img, { scale: 1.035 }, T({ type: 'spring', stiffness: 120, damping: 18 })));
-    fig.addEventListener('mouseleave', () => animate(img, { scale: 1 },     T({ type: 'spring', stiffness: 120, damping: 20 })));
-  }
-
-  /* =================================================================
-     DESKTOP STAGE
-     ================================================================= */
-  function buildStage() {
-    const panelsEl = document.getElementById('panels');
-    const figsEl = document.getElementById('figs');
-
-    return STEPS.map((s, i) => {
-      const panel = el(`
-        <div class="panel absolute inset-0" aria-hidden="true"><div class="fit origin-top-left">
-          <p class="lead ${s.lead} text-[clamp(20px,1.67vw,34px)] leading-[1.375] [&_b]:font-bold">${s.leadHTML}</p>
-          ${s.extraHTML ? `<div class="extra">${s.extraHTML}</div>` : ''}
-          <p class="body ${s.body} mt-[clamp(14px,2.6vh,30px)] text-[clamp(14px,1.04vw,20px)] leading-[1.4]">${s.bodyHTML}</p>
-        </div></div>`);
-      panelsEl.appendChild(panel);
-      const words = splitWords(panel.querySelector('.lead'));
-      const extra = panel.querySelectorAll('.extra > *');
-      const body  = panel.querySelector('.body');
-
-      const group = el(`<div class="group absolute inset-0"></div>`);
-      const figs = s.images.map(({ src, alt, box: [l, t, r, b] }) => {
-        const f = el(`
-          <figure class="fig" style="left:${pct(l,1920)};top:${pct(t,1080)};right:${pct(1920-r,1920)};bottom:${pct(1080-b,1080)}">
-            <div class="par"><div class="clip"><img src="${src}" alt="${alt}" decoding="async" ${i ? 'loading="lazy"' : ''}/></div></div>
-          </figure>`);
-        group.appendChild(f);
-        bindImageHover(f);
-        return f;
-      });
-      figsEl.appendChild(group);
-      panel.querySelectorAll('.link-hover').forEach(bindUnderline);
-
-      return { panel, words, extra, body, group, figs };
-    });
-  }
-
-  function enter(step, dir, first) {
-    const { panel, words, extra, body, group, figs } = step;
-    panel.classList.add('is-on'); group.classList.add('is-on');
-    panel.removeAttribute('aria-hidden');
-    panel.style.zIndex = 2; group.style.zIndex = 2;
-
-    const d0 = first ? 0.55 : 0.18; // let the outgoing frame breathe first
-
-    // 1) Lead copy: word-by-word rise from behind a mask
-    animate(words, { y: [dir > 0 ? '105%' : '-105%', '0%'], opacity: [0, 1] },
-      T({ ...SPRING.text, delay: stagger(0.012, { startDelay: d0 }) }));
-
-    // 2) Link + Stacy mark
-    if (extra.length) animate(extra, { y: [24 * dir, 0], opacity: [0, 1] },
-      T({ ...SPRING.text, delay: stagger(0.08, { startDelay: d0 + 0.25 }) }));
-
-    // 3) Body paragraph
-    animate(body, { y: [28 * dir, 0], opacity: [0, 1], filter: ['blur(6px)', 'blur(0px)'] },
-      T({ duration: 0.9, ease: EASE.soft, delay: d0 + 0.3 }));
-
-    // 4) Images: curtain wipe + heavy spring settle inside
-    figs.forEach((f, k) => {
-      const clip = f.querySelector('.clip'), img = f.querySelector('img');
-      const delay = d0 - 0.08 + k * 0.09;
-      animate(f, { opacity: 1, scale: 1 }, { duration: 0 });
-      animate(clip, { clipPath: [dir > 0 ? 'inset(100% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)', 'inset(0% 0% 0% 0%)'] },
-        T({ duration: 1.05, ease: EASE.reveal, delay }));
-      animate(img, { scale: [1.22, 1], y: [80 * dir, 0] }, T({ ...SPRING.image, delay }));
-    });
-  }
-
-  function leave(step, dir) {
-    const { panel, words, extra, body, group, figs } = step;
-    panel.style.zIndex = 1; group.style.zIndex = 1;
-    panel.setAttribute('aria-hidden', 'true');
-
-    animate(words, { y: dir > 0 ? '-105%' : '105%', opacity: 0 },
-      T({ duration: 0.32, ease: EASE.out, delay: stagger(0.004) }));
-    if (extra.length) animate(extra, { opacity: 0, y: -16 * dir }, T({ duration: 0.3, ease: EASE.out }));
-    animate(body, { opacity: 0, y: -18 * dir }, T({ duration: 0.3, ease: EASE.out }));
-
-    // Images sink back and dim while the next frame wipes over them
-    figs.forEach((f) => {
-      const img = f.querySelector('img');
-      animate(img, { scale: 1.08, y: -60 * dir }, T({ duration: 1.0, ease: EASE.reveal }));
-      animate(f, { opacity: 0, scale: 0.985 }, T({ duration: 0.55, ease: EASE.out, delay: 0.35 }));
-    });
-
-    const token = (step._t = (step._t || 0) + 1);
-    setTimeout(() => { if (step._t === token && step.panel.style.zIndex === '1') { panel.classList.remove('is-on'); group.classList.remove('is-on'); } }, REDUCED ? 0 : 1100);
-  }
-
-  // Keep long copy inside the viewport on short screens (e.g. 13" laptops)
-  function fitPanels() {
-    document.querySelectorAll('#panels .panel').forEach((p) => {
-      const fit = p.querySelector('.fit');
-      fit.style.transform = '';
-      const avail = p.clientHeight - 24, need = fit.scrollHeight;
-      if (need > avail) fit.style.transform = `scale(${Math.max(0.72, avail / need).toFixed(3)})`;
-    });
-  }
-
-  function initDesktop() {
-    const steps = buildStage();
-    fitPanels();
-    document.fonts && document.fonts.ready.then(fitPanels);
-    addEventListener('resize', fitPanels);
-    const wrap = document.getElementById('stage-wrap');
-    let current = -1;
-
-    // hide every frame at rest
-    steps.forEach((s) => {
-      animate(s.words, { opacity: 0 }, { duration: 0 });
-      animate([...s.extra, s.body], { opacity: 0 }, { duration: 0 });
-    });
-
-    const go = (i, first) => {
-      if (i === current) return;
-      const dir = i > current ? 1 : -1;
-      if (current >= 0) leave(steps[current], dir);
-      enter(steps[i], dir, first);
-      setTab(STEPS[i].tab, first);
-      current = i;
-    };
-
-    // Intro: header + title, then frame 0
-    const title = document.getElementById('title');
-    title.innerHTML = '<span class="wm">' + 'ABOUT'.split('').map((c) => `<span class="w">${c}</span>`).join('') + '</span>';
-    animate(title.querySelectorAll('.w'), { y: ['110%', '0%'] }, T({ ...SPRING.text, stiffness: 180, delay: stagger(0.045, { startDelay: 0.15 }) }));
-    animate('header .js-intro', { opacity: 1 }, { duration: 0 });
-    animate('header .js-nav, #logo', { opacity: [0, 1], y: [-14, 0] }, T({ ...SPRING.text, delay: stagger(0.06, { startDelay: 0.05 }) }));
-    animate('#tabs', { opacity: [0, 1], y: [12, 0] }, T({ ...SPRING.text, delay: 0.38 }));
-
-    // Scroll → frame index (scroll-snap holds each frame at an integer)
-    scroll((p) => {
-      const i = Math.min(STEPS.length - 1, Math.max(0, Math.round(p * (STEPS.length - 1))));
-      go(i, current === -1);
-    }, { target: wrap, offset: ['start start', 'end end'] });
-
-    // Scroll-linked parallax inside the active frame (between snap points)
-    const pars = steps.map((s) => s.group.querySelectorAll('.par'));
-    scroll((p) => {
-      const f = p * (STEPS.length - 1);
-      const i = Math.round(f), off = f - i; // -0.5 … 0.5
-      if (pars[i]) pars[i].forEach((n, k) => { n.style.transform = `translate3d(0, ${(-off * (40 + k * 18)).toFixed(2)}px, 0)`; });
-    }, { target: wrap, offset: ['start start', 'end end'] });
-
-    // Tab clicks jump to their frame
-    document.querySelectorAll('#tabs .tab').forEach((b) => b.addEventListener('click', () => {
-      const i = +b.dataset.go;
-      window.scrollTo({ top: wrap.offsetTop + i * innerHeight, behavior: REDUCED ? 'auto' : 'smooth' });
-    }));
-
-    // Keyboard: ←/→ also move between frames
-    addEventListener('keydown', (e) => {
-      if (!['ArrowRight', 'ArrowLeft'].includes(e.key)) return;
-      const i = Math.min(STEPS.length - 1, Math.max(0, current + (e.key === 'ArrowRight' ? 1 : -1)));
-      window.scrollTo({ top: wrap.offsetTop + i * innerHeight, behavior: 'smooth' });
-    });
-  }
-
-  /* =================================================================
-     MOBILE / TABLET FLOW
-     ================================================================= */
-  function initFlow() {
-    const host = document.getElementById('chapters');
-    STEPS.forEach((s, i) => {
-      const n = s.images.length;
-      const media = n === 1
-        ? `<figure class="fig -mx-5 sm:-mx-8 aspect-[4/5] sm:aspect-[3/2]"><div class="par"><div class="clip"><img src="${s.images[0].src}" alt="${s.images[0].alt}" loading="lazy"/></div></div></figure>`
-        : `<div class="-mx-5 sm:-mx-8 px-5 sm:px-8 flex gap-3 overflow-x-auto snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-             ${s.images.map((im) => `<figure class="fig shrink-0 snap-start ${n === 2 ? 'w-[78%] sm:w-[48%]' : 'w-[72%] sm:w-[40%]'} aspect-[3/4]"><div class="par"><div class="clip"><img src="${im.src}" alt="${im.alt}" loading="lazy"/></div></div></figure>`).join('')}
-           </div>`;
-      const art = el(`
-        <article class="chapter" data-tab="${s.tab}" data-i="${i}">
-          <p class="lead text-[clamp(21px,5.6vw,30px)] leading-[1.35] max-w-[34ch] [&_b]:font-bold">${s.leadHTML}</p>
-          ${s.extraHTML ? `<div class="extra [&_img]:w-[200px]">${s.extraHTML.replace(/text-\[clamp\([^\]]+\)\]/, 'text-[clamp(18px,5vw,24px)]')}</div>` : ''}
-          <p class="body mt-5 text-[15px] sm:text-base leading-[1.5] max-w-[46ch]">${s.bodyHTML}</p>
-          <div class="media mt-8">${media}</div>
-        </article>`);
-      host.appendChild(art);
-      // fig in the flow is positioned statically
-      art.querySelectorAll('.fig').forEach((f) => { f.style.position = 'relative'; });
-
-      const words = splitWords(art.querySelector('.lead'));
-      const rest = [...art.querySelectorAll('.extra > *'), art.querySelector('.body')];
-      animate(words, { opacity: 0 }, { duration: 0 });
-      animate(rest, { opacity: 0 }, { duration: 0 });
-
-      inView(art.querySelector('.lead'), () => {
-        animate(words, { y: ['105%', '0%'], opacity: [0, 1] }, T({ ...SPRING.text, delay: stagger(0.014) }));
-        animate(rest, { y: [24, 0], opacity: [0, 1] }, T({ duration: 0.9, ease: EASE.soft, delay: stagger(0.1, { startDelay: 0.25 }) }));
-      }, { amount: 0.4 });
-
-      art.querySelectorAll('.fig').forEach((f, k) => {
-        const clip = f.querySelector('.clip'), img = f.querySelector('img');
-        clip.style.clipPath = 'inset(100% 0% 0% 0%)';
-        inView(f, () => {
-          animate(clip, { clipPath: ['inset(100% 0% 0% 0%)', 'inset(0% 0% 0% 0%)'] }, T({ duration: 1.0, ease: EASE.reveal, delay: k * 0.09 }));
-          animate(img, { scale: [1.2, 1], y: [50, 0] }, T({ ...SPRING.image, delay: k * 0.09 }));
-        }, { amount: 0.2 });
-        // gentle scroll-linked parallax
-        scroll(animate(f.querySelector('.par'), { y: [24, -24] }, { ease: 'linear' }), { target: f, offset: ['start end', 'end start'] });
-      });
-      art.querySelectorAll('.link-hover').forEach(bindUnderline);
-
-      // Tab highlight follows the chapter in view
-      inView(art, () => { setTab(s.tab); }, { margin: '-45% 0px -45% 0px' });
-    });
-
-    document.querySelectorAll('#mtabs .tab').forEach((b) => b.addEventListener('click', () => {
-      const target = host.querySelector(`[data-i="${b.dataset.go}"]`);
-      window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - 170, behavior: REDUCED ? 'auto' : 'smooth' });
-    }));
-
-    animate('#flow .js-intro, header .js-intro', { opacity: [0, 1], y: [10, 0] }, T({ ...SPRING.text, delay: stagger(0.05) }));
-  }
-
-  /* =================================================================
-     BOOT — pick the layout once per breakpoint (reload on crossing it)
-     ================================================================= */
-  document.querySelectorAll('.nav-link').forEach(bindUnderline);
-  document.querySelectorAll('.tab').forEach(bindTabHover);
-  setTab('alessia', true);
-
-  const mq = matchMedia('(min-width: 1024px)');
-  (mq.matches ? initDesktop : initFlow)();
-  mq.addEventListener('change', () => location.reload());
+    // Tab colour follows the section in the middle of the screen (no animation)
+    const tabs = document.querySelectorAll('.tab');
+    const setTab = (name) => tabs.forEach((t) => t.classList.toggle('is-active', t.dataset.tab === name));
+    setTab('alessia');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) setTab(e.target.dataset.tab); });
+    }, { rootMargin: '-50% 0px -50% 0px' });
+    document.querySelectorAll('section[data-tab]').forEach((s) => io.observe(s));
   </script>
 </body>
 </html>
