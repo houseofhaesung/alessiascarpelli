@@ -1,0 +1,120 @@
+/* Work menu (desktop, 1024px and up).
+   Clicking WORK in the header turns it pink and slides a panel in from the left:
+   a 90% white veil with the categories from works.js. "X CLOSE", Esc or a click
+   outside the panel closes it. Below 1024px the stack-icon menu (menu.js) is used.
+   Needs works.js loaded first. Used by every page. */
+(() => {
+  const C = window.CATEGORIES || [];
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const here = decodeURIComponent(location.hash.slice(1));
+
+  const css = `
+    .wm-veil { position: fixed; inset: 0; z-index: 59; }
+    .wm-panel {
+      position: fixed; top: 0; bottom: 0; left: 0; z-index: 60;
+      width: 32.3vw; min-width: 360px;                       /* 620px at 1920 */
+      background: rgba(255, 255, 255, 0.9);
+      transform: translateX(-100%);
+      transition: transform .55s cubic-bezier(.22, 1, .36, 1);
+      overflow-y: auto; overscroll-behavior: contain;
+      font-family: "ABC Areal", "Helvetica Neue", Helvetica, Arial, sans-serif; color: #0b0b0b;
+    }
+    .wm-panel.is-open { transform: none; }
+    .wm-top { height: var(--header, clamp(72px, 10.4vh, 116px)); display: flex; align-items: center; padding-left: var(--pad, 3.6vw); }
+    .wm-close { font-weight: 700; font-size: clamp(10.5pt, 1.25vw, 19.5pt); letter-spacing: 0; color: #0b0b0b; transition: color .2s ease; }
+    .wm-close:hover:not(.is-fresh) { color: #FF3686; }
+    .wm-close:focus-visible { outline: 2px solid #FF3686; outline-offset: 4px; }
+    .wm-body { padding: 0 var(--pad, 3.6vw) 6vh; margin-top: calc(13.8vh - var(--header, clamp(72px, 10.4vh, 116px))); }
+    .wm-title { font-family: "Faculty Glyphic", serif; font-weight: 400; line-height: 1.05;
+                font-size: clamp(30pt, min(3.333vw, 5.93vh), 54pt); }
+    .wm-list { margin-top: .8vh; }
+    .wm-cat > a, .wm-cat > span { display: inline-block; font-family: "Faculty Glyphic", serif;
+      font-size: clamp(20px, min(2.09vw, 3.72vh), 44px); line-height: 1.6; color: #0b0b0b; transition: color .2s ease; }
+    .wm-subs { margin: .43em 0 .98em; }
+    .wm-subs a { display: inline-block; font-size: clamp(14px, min(1.36vw, 2.42vh), 28px); line-height: 1.385; color: #0b0b0b; transition: color .2s ease; }
+    .wm-panel a:hover, .wm-panel a:active, .wm-panel a:focus-visible { color: #FF3686; outline: none; }   /* pink only on hover / click */
+    .wm-panel li { opacity: 0; transform: translateX(-10px); transition: opacity .4s ease, transform .4s ease; }
+    .wm-panel.is-open li { opacity: 1; transform: none; transition-delay: calc(.12s + var(--i) * .04s); }
+    a.is-work-open { color: #FF3686 !important; }
+    html.wm-lock, html.wm-lock body { overflow: hidden; }
+    @media (max-width: 1023.98px) { .wm-panel, .wm-veil { display: none !important; } }
+    @media (prefers-reduced-motion: reduce) { .wm-panel, .wm-panel li { transition: none; } }
+  `;
+  const style = document.createElement('style');
+  style.textContent = css;
+  document.head.appendChild(style);
+
+  let i = 0;
+  const items = C.map((c) => {
+    const subs = c.subs || [];
+    const inHere = c.id === here || subs.some((s) => s.id === here);
+    const subList = subs.length
+      ? `<ul class="wm-subs">${subs.map((s) => `<li style="--i:${i++}"><a href="category.html#${esc(s.id)}"${s.id === here ? ' aria-current="page"' : ''}>${esc(s.title)}</a></li>`).join('')}</ul>`
+      : '';
+    return `<li class="wm-cat${inHere ? ' is-here' : ''}" style="--i:${i++}"><a href="category.html#${esc(c.id)}">${esc(c.menu || c.title)}</a>${subList}</li>`;
+  }).join('');
+
+  const veil = document.createElement('div');
+  veil.className = 'wm-veil'; veil.hidden = true;
+  const panel = document.createElement('nav');
+  panel.className = 'wm-panel'; panel.id = 'work-menu'; panel.hidden = true;
+  panel.setAttribute('aria-label', 'Work');
+  panel.innerHTML = `
+    <div class="wm-top"><button type="button" class="wm-close">X CLOSE</button></div>
+    <div class="wm-body">
+      <p class="wm-title">Work</p>
+      <ul class="wm-list">${items}</ul>
+    </div>`;
+  document.body.append(veil, panel);
+
+  const triggers = [...document.querySelectorAll('[data-work-menu]')];
+  let lastTrigger = null;
+
+  function open(trigger) {
+    lastTrigger = trigger;
+    triggers.forEach((t) => { t.classList.add('is-work-open'); t.setAttribute('aria-expanded', 'true'); });
+    veil.hidden = false; panel.hidden = false;
+    document.documentElement.classList.add('wm-lock');
+    requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('is-open')));
+    const x = panel.querySelector('.wm-close');
+    x.classList.add('is-fresh');                       // it opens right under the cursor: stay black until the mouse leaves it
+    x.addEventListener('pointerleave', () => x.classList.remove('is-fresh'), { once: true });
+    setTimeout(() => x.focus({ preventScroll: true }), 50);
+  }
+  function close() {
+    panel.classList.remove('is-open');
+    triggers.forEach((t) => { t.classList.remove('is-work-open'); t.setAttribute('aria-expanded', 'false'); });
+    document.documentElement.classList.remove('wm-lock');
+    veil.hidden = true;
+    setTimeout(() => { if (!panel.classList.contains('is-open')) panel.hidden = true; }, 550);
+    lastTrigger?.focus({ preventScroll: true });
+  }
+
+  triggers.forEach((t) => {
+    t.setAttribute('aria-controls', 'work-menu');
+    t.setAttribute('aria-expanded', 'false');
+    t.addEventListener('click', (e) => {
+      if (!matchMedia('(min-width: 1024px)').matches) return;      // phones: follow the link
+      e.preventDefault();
+      panel.classList.contains('is-open') ? close() : open(t);
+    });
+  });
+  panel.querySelector('.wm-close').addEventListener('click', close);
+  veil.addEventListener('click', close);
+  panel.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    // a link to the page we're already on (only the #part changes): just close
+    if (a && a.pathname === location.pathname) setTimeout(close, 0);
+  });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && panel.classList.contains('is-open')) close(); });
+  addEventListener('hashchange', () => {
+    const h = decodeURIComponent(location.hash.slice(1));
+    panel.querySelectorAll('.wm-subs a').forEach((a) => (a.hash.slice(1) === h ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
+    panel.querySelectorAll('.wm-cat').forEach((li) => {
+      const c = C.find((x) => x.id === li.querySelector('a').hash.slice(1));
+      li.classList.toggle('is-here', !!c && (c.id === h || (c.subs || []).some((s) => s.id === h)));
+    });
+  });
+  // the wheel shouldn't move the page behind the open panel
+  veil.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+})();

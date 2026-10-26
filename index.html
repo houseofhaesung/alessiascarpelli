@@ -3,21 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>About — Alessia Scarpelli</title>
-  <meta name="description" content="Alessia Scarpelli — fashion designer and pattern maker. About Alessia and Stacy Wear." />
+  <title>Alessia Scarpelli</title>
+  <meta name="description" content="Alessia Scarpelli — fashion designer and pattern maker." />
 
-  <!-- Favicon
-       favicon.svg: black A on light browser tabs, white A on dark tabs (switches automatically)
-       favicon.ico / favicon-32.png: fallback for browsers without SVG favicons (black version)
-       apple-touch-icon / favicon-192: home-screen icons on iPhone and Android -->
+  <!-- Favicon (same set as about.html) -->
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 
-  <link rel="preload" href="fonts/ABCAreal-Regular.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="fonts/FacultyGlyphic-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/ABCAreal-Bold.woff2" as="font" type="font/woff2" crossorigin />
 
   <!-- Tailwind (Play CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -37,55 +33,114 @@
 
   <style>
     @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-    @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Medium.woff2")  format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
     @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Bold.woff2")    format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
     @font-face { font-family: "Faculty Glyphic"; src: url("fonts/FacultyGlyphic-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 
-    :root { --pad: clamp(20px, 3.6vw, 72px); --col: 36.1vw; --header: clamp(72px, 10.4vh, 116px); }
-    html, body { background: #fff; color: #0b0b0b; }
-    body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-    b, strong { font-weight: 700; }
+    :root {
+      --pad: clamp(20px, 3.6vw, 72px);
+      --mpad: clamp(20px, 6.5vw, 32px);   /* mobile side margin (27px on a 412px phone) */
+      --col: 36.1vw;
+      --header: clamp(72px, 10.4vh, 116px);
+
+      /* Gallery sizes, measured from the 1920×1080 design.
+         --u is the "frame height": the viewport height on desktop, capped by width on phones. */
+      --u: min(100vh, 150vw);
+      --u: min(100svh, 150vw);
+      --size-l: calc(var(--u) * 0.676);   /* tall   — 730px at 1080 */
+      --size-m: calc(var(--u) * 0.525);   /* medium — 567px at 1080 */
+      --size-s: calc(var(--u) * 0.377);   /* small  — 407px at 1080 */
+      --gap:    calc(var(--u) * 0.0111);  /* 12px at 1080 */
+      --line:   53.8%;                    /* all images centre on this line (581px at 1080) */
+    }
+    html, body { height: 100%; background: #fff; color: #0b0b0b; }
+    body { margin: 0; overflow: hidden; -webkit-font-smoothing: antialiased; }
+    @media (max-width: 1023.98px) {
+      html, body { height: auto; }
+      body { overflow: visible; }
+      .stage { display: none; }
+    }
     img { display: block; }
 
-    /* ---------- Desktop: each section is one Figma frame (1920×1080) ---------- */
-    @media (min-width: 1024px) {
-      .frame { position: relative; height: 100vh; min-height: 640px; }
-      /* image boxes come from the Figma frame, set per figure as --l --t --r --b */
-      .fig { position: absolute; left: var(--l); top: var(--t); right: var(--r); bottom: var(--b); }
-      .fig img, .fig video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* ---------- Gallery ---------- */
+    .stage {
+      position: fixed; inset: 0;
+      overflow: hidden;
+      cursor: grab;
+      touch-action: none;            /* we handle horizontal swipes ourselves */
+      user-select: none; -webkit-user-select: none;
+      outline: none;
     }
-    /* Scroll fade: text and images fade in/out with a short delay.
-       Only applied once JS has run (html.js), so the page is fully visible without it. */
-    html.js .reveal {
-      opacity: 0;
-      transform: translate3d(0, 18px, 0);
-      transition: opacity .7s ease, transform .9s cubic-bezier(.22, 1, .36, 1);
-      transition-delay: var(--d, 0s);
+    .stage.is-dragging { cursor: grabbing; }
+    .track {
+      position: absolute; left: 0; top: var(--line);
+      display: flex; align-items: center; gap: var(--gap);
+      width: max-content;
+      will-change: transform;
     }
-    html.js .reveal.is-in { opacity: 1; transform: none; }
-    @media (prefers-reduced-motion: reduce) {
-      html.js .reveal { transition: none; transform: none; }
+    .set { display: flex; flex: none; align-items: center; gap: var(--gap); }
+    .item { margin: 0; flex: none; position: relative; transition: opacity .35s ease; }
+    .track, .set { height: 0; }                       /* items hang from the centre line */
+    .item a { display: block; cursor: pointer; -webkit-user-drag: none; outline: none; }
+    .item img { height: var(--h); width: auto; pointer-events: none; -webkit-user-drag: none; background: #f2f2f2; }
+    .stage.is-dragging .item a { cursor: grabbing; }
+
+    /* project caption under the hovered image (measured from the 1920 design):
+       year in pink on the left, title in caps on the right, both on the photo's edges */
+    .item figcaption {
+      position: absolute; left: 0; right: 0; top: calc(100% + .6em);
+      display: flex; justify-content: space-between; align-items: baseline; gap: 1em;
+      font-family: "Faculty Glyphic", serif; font-weight: 400; text-transform: uppercase;
+      font-size: clamp(13px, 1.06vw, 22px); line-height: 1;
+      white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity .3s ease;
+    }
+    .item figcaption .yr { color: #FF3686; }
+    .item:hover figcaption, .item:focus-within figcaption { opacity: 1; }
+    .item a:focus-visible img { outline: 2px solid #FF3686; outline-offset: 3px; }
+
+    /* on click: the other images fade, then the project page opens */
+    .stage.is-leaving .item:not(.is-picked) { opacity: 0; }
+    .item[data-size="L"] { --h: var(--size-l); }
+    .item[data-size="M"] { --h: var(--size-m); }
+    .item[data-size="S"] { --h: var(--size-s); }
+
+    /* ---------- Mobile: a plain vertical grid (measured on a 412×917 phone) ----------
+       one full-width photo, then two side by side; repeat */
+    .mgrid { display: none; }
+    @media (max-width: 1023.98px) {
+      .mgrid {
+        --row: calc((100vw - var(--mx) * 2) * 0.851);          /* side-by-side row height: 309px */
+        --mx: clamp(16px, 6vw, 32px);                          /* side margin: 25px */
+        display: grid; row-gap: 16px;
+        padding: 73px var(--mx) 40px;                          /* first photo starts just under the 72px header */
+      }
+      .mgrid .mrow { display: flex; gap: 13px; height: var(--row); }
+      .mgrid .mrow .item { flex: var(--ar) 1 0; min-width: 0; height: 100%; }
+      .mgrid .item a, .mgrid .item img { display: block; width: 100%; height: 100%; object-fit: cover; }
+      .mgrid .mwide .item img { height: auto; aspect-ratio: var(--mr); }
+      .mgrid figcaption { display: none; }
+      .mgrid-end { height: 1px; margin-top: -16px; }
+      .mgrid .item a:focus-visible img { outline: 2px solid #FF3686; outline-offset: 3px; }
     }
 
-    /* Mobile / tablet */
-    @media (max-width: 1023.98px) {
-      .fig img, .fig video { width: 100%; height: 100%; object-fit: cover; display: block; }
-      .frame { scroll-margin-top: 150px; }
-    }
+    /* gentle first appearance */
+    .stage { opacity: 0; transition: opacity .8s ease .1s; }
+    .stage.is-ready { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) { .stage { transition: none; } }
   </style>
 </head>
 
 <body class="font-sans">
 
-  <!-- ================= HEADER ================= -->
+  <!-- ================= HEADER (same as about.html) ================= -->
   <header class="fixed inset-x-0 top-0 z-50 bg-white">
     <!-- desktop -->
     <nav class="hidden lg:flex items-center h-[var(--header)] px-[var(--pad)] relative">
       <ul class="flex gap-[2.4vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
-        <li><a href="#" class="text-ink transition-colors hover:text-pink">WORK</a></li>
-        <li><a href="#" class="text-ink transition-colors hover:text-pink" aria-current="page">ABOUT</a></li>
+        <li><a href="category.html#selected-works" data-work-menu class="text-ink transition-colors hover:text-pink">WORK</a></li>
+        <li><a href="about.html" class="text-ink transition-colors hover:text-pink">ABOUT</a></li>
       </ul>
-      <a href="#" class="absolute left-[var(--col)] top-1/2 -translate-y-1/2" aria-label="Alessia Scarpelli — home">
+      <a href="index.html" class="absolute left-[var(--col)] top-1/2 -translate-y-1/2" aria-label="Alessia Scarpelli — home" aria-current="page">
         <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(240px,24.6vw,480px)] h-auto" />
       </a>
       <ul class="ml-auto flex gap-[1.9vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
@@ -93,213 +148,239 @@
         <li><a href="#" class="text-ink transition-colors hover:text-pink">CONTACT</a></li>
       </ul>
     </nav>
-    <!-- mobile -->
-    <nav class="lg:hidden px-5 pt-5 pb-3">
-      <a href="#" class="block" aria-label="Alessia Scarpelli — home">
-        <img src="images/logo.png" alt="Alessia Scarpelli" class="mx-auto w-[min(86vw,420px)] h-auto" />
+    <!-- mobile: logo + stack icon (menu.js) -->
+    <nav class="lg:hidden flex items-center justify-between h-[72px] px-[var(--mpad)]">
+      <a href="index.html" aria-label="Alessia Scarpelli — home">
+        <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[min(68vw,300px)] h-auto" />
       </a>
-      <div class="mt-4 flex justify-between text-[13px] sm:text-[15px] font-bold [&_a]:transition-colors [&_a:hover]:text-pink">
-        <div class="flex gap-5"><a href="#">WORK</a><a href="#" aria-current="page">ABOUT</a></div>
-        <div class="flex gap-5"><a href="#">PRESS</a><a href="#">CONTACT</a></div>
-      </div>
+      <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+        <svg class="i-open" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M1 4.5h20M1 11h20M1 17.5h20"/></svg>
+        <svg class="i-close" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M3.5 3.5l15 15M18.5 3.5l-15 15"/></svg>
+      </button>
     </nav>
   </header>
 
-  <!-- ================= PAGE TITLE ================= -->
-  <!-- desktop: pinned top-left, copy scrolls underneath it -->
-  <div class="hidden lg:block fixed left-0 top-0 z-40 w-[var(--col)] h-[31vh] pl-[var(--pad)] pointer-events-none">
-    <!-- Tabs sit right under ABOUT, so the gap stays the same if either size changes.
-         mt 1.108vw = 21.3px at 1920 → visible gap between the letters = 20pt -->
-    <div class="absolute top-[13vh]">
-      <h1 class="font-display leading-[0.9] text-[clamp(31pt,3.056vw,48pt)]">ABOUT</h1>
-      <div class="mt-[clamp(14px,1.108vw,24px)] font-display leading-none text-[clamp(17pt,1.944vw,30pt)] whitespace-nowrap pointer-events-auto">
-        <a href="#alessia" class="tab" data-tab="alessia">About Alessia</a><span aria-hidden="true">&nbsp;|&nbsp;</span><a href="#stacy" class="tab" data-tab="stacy">Stacy Wear</a>
-      </div>
-    </div>
-  </div>
-  <!-- mobile -->
-  <div class="lg:hidden pt-[124px] sm:pt-[132px] px-5 sm:px-8">
-    <h1 class="font-display text-[clamp(27pt,10.3vw,43pt)] leading-[0.9]">ABOUT</h1>
-  </div>
-  <div class="lg:hidden sticky top-[96px] sm:top-[104px] z-40 px-5 sm:px-8 py-2 bg-white font-display text-[clamp(15pt,5.6vw,23pt)] leading-tight">
-    <a href="#alessia" class="tab" data-tab="alessia">About Alessia</a><span aria-hidden="true">&nbsp;|&nbsp;</span><a href="#stacy" class="tab" data-tab="stacy">Stacy Wear</a>
-  </div>
+  <!-- mobile menu (opened by the stack icon) -->
+  <nav id="mobile-menu" class="mobile-menu" hidden aria-label="Menu">
+    <ul>
+      <li><a href="category.html#selected-works" data-mobile-work>WORK</a></li>
+      <li><a href="about.html">ABOUT</a></li>
+      <li><a href="#">PRESS</a></li>
+      <li><a href="#">CONTACT</a></li>
+    </ul>
+  </nav>
 
-  <!-- ================= CONTENT =================
-       Text sizes scale with both width and height so a frame always fits the screen.
-       Figure boxes: --l --t --r --b measured from the 1920×1080 Figma frames. -->
-  <main class="pb-20 lg:pb-0">
-
-    <!-- 01 · intro-14 -->
-    <section id="alessia" class="frame" data-tab="alessia">
-      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[24vw]">
-        <p class="lead">My name is <b>Alessia</b> <span class="whitespace-nowrap"><b>Scarpelli</b>,</span> and I am a fashion designer and pattern maker with a deep-rooted passion for creativity, craftsmanship and self-expression.</p>
-        <p class="body">Fashion has been part of my life for as long as I can remember. Even as a child, I was already trying to make my own clothes. What began as a personal passion gradually became my profession, and after more than 15 years in the industry, I still find the same excitement and inspiration in what I do. I love fashion because it allows us to express who we are and bring art into our everyday lives. To me, clothing is never superficial: it has the power to make people feel good, communicate identity and tell stories.</p>
-      </div>
-      <div class="media">
-        <figure class="fig single" style="--l:36.09%;--t:25.09%;--r:0%;--b:0%">
-          <img src="images/about-01.jpg" alt="Runway rehearsal with models among red chairs" />
-        </figure>
-      </div>
-    </section>
-
-    <!-- 02 · intro-15 -->
-    <section class="frame" data-tab="alessia">
-      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[25.5vw]">
-        <p class="lead">Throughout my career, I have explored many different areas of the fashion industry, developing a broad understanding of the entire creative and production process, <b>from the initial concept to the finished garment.</b></p>
-        <p class="body lg:w-[85%]">My approach always begins with understanding the essence of a brand, a project or a person, identifying its strengths and expanding its vision through a creative and thoughtful approach. I then translate that vision into practical solutions, combining design and technical expertise with precision, research, craftsmanship and a strong commitment to sustainability.</p>
-      </div>
-      <div class="media row">
-        <figure class="fig" style="--l:36.09%;--t:25.09%;--r:35.47%;--b:0%">
-          <img src="images/about-02a.jpg" alt="Stacy collection overview moodboard" loading="lazy" />
-        </figure>
-        <figure class="fig" style="--l:65.47%;--t:25.09%;--r:0%;--b:0%">
-          <img src="images/about-02b.jpg" alt="Alessia choosing fabric rolls" loading="lazy" />
-        </figure>
-      </div>
-    </section>
-
-    <!-- 03 · intro-16 -->
-    <section class="frame" data-tab="alessia">
-      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[22.5vw]">
-        <p class="lead">My background in both <b>fashion design and pattern making</b> allows me to develop garments that are not only visually compelling but also <b>technically feasible.</b></p>
-        <p class="body lg:w-[88%]">My knowledge of CLO3D further enables me to explore ideas, develop patterns and bring garments to life digitally. I enjoy finding creative solutions to challenges and guiding projects from concept to completion, bringing together imagination, ingenuity and a comprehensive understanding of garment development.</p>
-      </div>
-      <div class="media row three">
-        <figure class="fig" style="--l:33.80%;--t:30.09%;--r:45.63%;--b:5%">
-          <img src="images/about-03a.jpg" alt="3D garment: pink faux-fur coat" loading="lazy" />
-        </figure>
-        <figure class="fig" style="--l:55.00%;--t:30.09%;--r:24.53%;--b:5%">
-          <img src="images/about-03b.jpg" alt="3D garment: black tee and metallic trousers" loading="lazy" />
-        </figure>
-        <figure class="fig" style="--l:76.04%;--t:30.09%;--r:3.39%;--b:5%">
-          <img src="images/about-03c.jpg" alt="3D garment: long grey faux-fur coat" loading="lazy" />
-        </figure>
-      </div>
-    </section>
-
-    <!-- 04 · intro-17 -->
-    <section class="frame" data-tab="alessia">
-      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[19vw]">
-        <p class="lead">Beyond the technical and creative aspects of my work, fashion also has a deeply <b>personal and political meaning for</b> <span class="whitespace-nowrap"><b>me</b>.</span></p>
-        <p class="body">I see it as a powerful tool for self-expression, a way to challenge conventions and create a visual identity that reflects the unique story of a brand or an individual. I believe that creativity should go hand in hand with ethical responsibility, sustainability and inclusivity.</p>
-      </div>
-      <div class="media">
-        <figure class="fig single" style="--l:36.09%;--t:12.41%;--r:0%;--b:0%">
-          <img src="images/about-04.jpg" alt="Group portrait in colourful faux-fur pieces" loading="lazy" />
-        </figure>
-      </div>
-    </section>
-
-    <!-- 05 · intro-18 -->
-    <section class="frame" data-tab="alessia">
-      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[21vw]">
-        <p class="lead">I am a curious and sensitive person, deeply in love with <b>art and</b> <span class="whitespace-nowrap"><b>nature</b>,</span> and passionate about <b>protecting animals and the environment.</b></p>
-        <p class="body">Through my work, I hope to contribute to a fashion industry where freedom of expression meets ethical and sustainable practices, and where creativity becomes a force for positive change. My goal is to help make fashion a more inclusive, thoughtful and imaginative space, one that celebrates individuality while respecting the world we live in.</p>
-      </div>
-      <div class="media row">
-        <figure class="fig" style="--l:36.25%;--t:25.65%;--r:35.73%;--b:0%">
-          <video src="images/about-05a.mp4" poster="images/about-05a-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Recycled plastic pieces being sorted by hand"></video>
-        </figure>
-        <figure class="fig" style="--l:65.00%;--t:25.65%;--r:0%;--b:0%">
-          <img src="images/about-05b.jpg" alt="Fitting a top made of recycled plastic" loading="lazy" />
-        </figure>
-      </div>
-    </section>
-
-    <!-- 06 · intro-19 -->
-    <section id="stacy" class="frame" data-tab="stacy">
-      <div class="copy px-5 sm:px-8 pt-10 lg:p-0 lg:absolute lg:left-[var(--pad)] lg:top-[39.5vh] lg:w-[25vw]">
-        <p class="lead">Meet Stacy: A Manifesto of Identity and Craftsmanship</p>
-        <a href="https://stacywear.it/" target="_blank" rel="noopener" class="inline-block mt-[1.2vh] font-bold text-[clamp(18px,min(1.67vw,2.96vh),32px)] underline-offset-4 hover:underline hover:text-pink focus-visible:underline">https://stacywear.it/</a>
-        <img src="images/stacy-mark.png" alt="Stacy Wear" class="mt-[2.4vh] w-[clamp(140px,13.4vw,258px)] h-auto" />
-        <p class="body">Stacy Wear is an emotional project inspired by the rebellious spirit of the late ’70s punk movement and the raw energy of the late ’80s and early ’90s rave culture. Alessia reinterprets these influences with a contemporary twist, creating designs that speak to individuality and self-expression.<br>Her unique vision quickly resonated with her audience, who see her pieces as more than just clothing. Her designs are a form of self-expression —symbols of identity and belonging. The brand embraces the marginal, elevating it and redefining beauty by blurring the lines of what is considered “different” or distant from us.</p>
-      </div>
-      <div class="media">
-        <figure class="fig single" style="--l:36.09%;--t:25.09%;--r:0%;--b:0%">
-          <img src="images/about-06.jpg" alt="Stacy Wear campaign, black and white group photo" loading="lazy" />
-        </figure>
-      </div>
-    </section>
-
+  <!-- ================= GALLERY ================= -->
+  <main id="stage" class="stage" tabindex="0" aria-roledescription="carousel" aria-label="Selected work. Hover to pause, click an image to open the project. Drag, scroll or use the arrow keys to browse.">
+    <div id="track" class="track"></div>
   </main>
 
-  <!-- Shared type + media styles (kept here so each section above stays short) -->
-  <style type="text/tailwindcss">
-    .lead { @apply text-[clamp(20px,5.6vw,30px)] leading-[1.375] max-w-[34ch]
-                   lg:max-w-none lg:text-[clamp(18px,min(1.67vw,2.96vh),34px)]; }
-    .body { @apply mt-5 text-[15px] sm:text-base leading-[1.45] max-w-[46ch]
-                   lg:max-w-none lg:mt-[2.4vh] lg:text-[clamp(13px,min(1.04vw,1.85vh),20px)] lg:leading-[1.4]; }
+  <!-- Mobile: vertical grid (built by the script below) -->
+  <div id="mgrid" class="mgrid" aria-label="Selected work"></div>
 
-    /* mobile: single photo full-bleed, several photos as a swipe row */
-    /* desktop: the image layer covers the whole frame, so it must let clicks and text selection
-       pass through to the copy; only the photos themselves take the pointer */
-    .media        { @apply mt-8 lg:mt-0 lg:absolute lg:inset-0 lg:pointer-events-none; }
-    .media .fig   { @apply lg:pointer-events-auto; }
-    .copy         { @apply relative lg:z-10 select-text; }
-    .media .single{ @apply aspect-[4/5] sm:aspect-[3/2] lg:aspect-auto; }
-    .media.row    { @apply flex gap-3 overflow-x-auto snap-x snap-mandatory px-5 sm:px-8
-                           [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-                           lg:block lg:overflow-visible lg:p-0; }
-    .media.row .fig        { @apply shrink-0 snap-start w-[78%] sm:w-[48%] aspect-[3/4] lg:w-auto lg:aspect-auto; }
-    .media.row.three .fig  { @apply w-[72%] sm:w-[40%] lg:w-auto; }
-    main > section + section { @apply mt-24 sm:mt-28 lg:mt-0; }
-
-    .tab           { @apply hover:text-pink; }
-    .tab.is-active { @apply text-pink; }
-  </style>
-
+  <script src="works.js"></script>
   <script>
-    // Tab colour follows the section in the middle of the screen (no animation)
-    const tabs = document.querySelectorAll('.tab');
-    const setTab = (name) => tabs.forEach((t) => t.classList.toggle('is-active', t.dataset.tab === name));
-    setTab('alessia');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) setTab(e.target.dataset.tab); });
-    }, { rootMargin: '-50% 0px -50% 0px' });
-    document.querySelectorAll('section[data-tab]').forEach((s) => io.observe(s));
+  /* Images, titles and links come from works.js (one entry per project). */
+  const WORKS = (window.WORKS || []).filter((w) => w.home !== false);   // home: false hides a project here
+  const PATTERN = ['M', 'L', 'S', 'M', 'L'];
 
-    // Respect reduced-motion: keep the video on its first frame
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelectorAll('video[autoplay]').forEach((v) => { v.removeAttribute('autoplay'); v.pause(); });
+  /* Feel of the motion */
+  const DRIFT = 28;         // auto-scroll speed, in pixels per second on a 1920px-wide screen (0 = off)
+  const RESUME_AFTER = 1.5; // seconds after a touch/drag/scroll before the drift starts again
+  const EASE = 0.09;        // how quickly the gallery catches up with wheel / keys
+  const WHEEL_SPEED = 1;    // 1 = one pixel of scroll moves one pixel
+  const THROW = 18;         // how far a fast swipe keeps travelling
 
-    // ---- Scroll fade in / out ----
-    // Delays (seconds): text first, then images one after another.
-    const DELAY = { text: 0.12, image: 0.28, imageStep: 0.12 };
-    document.documentElement.classList.add('js');
-    const items = [];
-    document.querySelectorAll('section.frame').forEach((sec) => {
-      const copy = sec.querySelector('.copy');
-      copy.classList.add('reveal'); copy.style.setProperty('--d', DELAY.text + 's');
-      items.push({ el: copy, kind: 'text' });
-      sec.querySelectorAll('.fig').forEach((f, k) => {
-        f.classList.add('reveal'); f.style.setProperty('--d', (DELAY.image + k * DELAY.imageStep) + 's');
-        items.push({ el: f, kind: 'image' });
+  /* ---------------- build ---------------- */
+  const stage = document.getElementById('stage');
+  const track = document.getElementById('track');
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  const mobile = matchMedia('(max-width: 1023.98px)');
+  const SPLIT = [1.13, 1];                      // phone grid: how two side-by-side photos share the row (188px : 166px)
+
+  function makeItem(w, i, hidden) {
+    const fig = document.createElement('figure');
+    fig.className = 'item';
+    fig.dataset.size = w.size || PATTERN[i % PATTERN.length];
+    fig.style.setProperty('--ar', (w.cover.w / w.cover.h).toFixed(3));
+    fig.innerHTML =
+      `<a href="work.html#${esc(w.id)}" ${hidden ? 'tabindex="-1" aria-hidden="true"' : ''}>` +
+        `<img src="${esc(w.cover.src)}" width="${w.cover.w}" height="${w.cover.h}" alt="${hidden ? '' : esc(w.title)}" decoding="async" draggable="false" />` +
+      `</a>` +
+      `<figcaption aria-hidden="true"><span class="yr">${esc(w.year || '')}</span><span>${esc(w.title)}</span></figcaption>`;
+    return fig;
+  }
+
+  /* Phone grid order comes from MOBILE_HOME in works.js: full width, two side by side, repeat. */
+  function mobileBlocks() {
+    const all = window.WORKS || [];
+    const ids = window.MOBILE_HOME || WORKS.map((w) => w.id);
+    const list = ids.map((id) => all.find((w) => w.id === id)).filter(Boolean).map((w) => ({ w, i: all.indexOf(w) }));
+    const blocks = [];
+    for (let k = 0; k < list.length;) {
+      blocks.push({ wide: list[k++] });
+      if (k < list.length) { blocks.push({ rows: [list.slice(k, k + 2)] }); k += 2; }
+    }
+    return blocks;
+  }
+
+  /* Mobile grid repeats without end: when you get near the bottom, the same photos
+     are added again (first copy is the real one; repeats are hidden from screen readers). */
+  let gridObserver = null;
+  function appendGridRound(grid, hidden) {
+    mobileBlocks().forEach((bl) => {
+      if (bl.wide) {
+        const d = document.createElement('div'); d.className = 'mwide';
+        const it = makeItem(bl.wide.w, bl.wide.i, hidden);
+        it.style.setProperty('--mr', String(bl.wide.w.mobileRatio || (bl.wide.w.cover.w / bl.wide.w.cover.h)));
+        d.appendChild(it);
+        grid.insertBefore(d, grid.lastElementChild);
+        return;
+      }
+      bl.rows.forEach((row, r) => {
+        if (!row.length) return;
+        const d = document.createElement('div'); d.className = 'mrow';
+        row.forEach((o, k) => {
+          const it = makeItem(o.w, o.i, hidden);
+          it.style.setProperty('--ar', String(row.length < 2 ? 1 : SPLIT[k]));
+          d.appendChild(it);
+        });
+        grid.insertBefore(d, grid.lastElementChild);
       });
     });
+  }
+  function buildGrid() {
+    const grid = document.getElementById('mgrid');
+    grid.innerHTML = '<div class="mgrid-end" aria-hidden="true"></div>';   // sentinel at the bottom
+    appendGridRound(grid, false);
+    appendGridRound(grid, true);
+    gridObserver?.disconnect();
+    gridObserver = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      appendGridRound(grid, true);
+      const end = grid.lastElementChild;                                  // check again after adding,
+      gridObserver.unobserve(end); gridObserver.observe(end);             // so it keeps going as you scroll
+    }, { rootMargin: '0px 0px 150% 0px' });                              // add more well before the end
+    gridObserver.observe(grid.lastElementChild);
+  }
 
-    const desktop = matchMedia('(min-width: 1024px)');
-    function update() {
-      const vh = innerHeight;
-      items.forEach(({ el, kind }) => {
-        const r = el.getBoundingClientRect();
-        let on;
-        if (desktop.matches && kind === 'text') {
-          // Text is visible only below the pinned ABOUT title, so it never runs into it
-          on = r.top > vh * 0.32 && r.top < vh * 0.75;
-        } else if (desktop.matches) {
-          on = r.top < vh * 0.8 && r.bottom > vh * 0.3;
-        } else {
-          on = r.top < vh * 0.85 && r.bottom > vh * 0.22;
-        }
-        el.classList.toggle('is-in', on);
-      });
-    }
-    let ticking = false;
-    addEventListener('scroll', () => {
-      if (!ticking) { ticking = true; requestAnimationFrame(() => { update(); ticking = false; }); }
-    }, { passive: true });
-    addEventListener('resize', update);
-    update();
+  function makeSet(hidden) {
+    const set = document.createElement('div');
+    set.className = 'set';
+    WORKS.forEach((w, i) => set.appendChild(makeItem(w, i, hidden)));
+    return set;
+  }
+
+  let setW = 0, starts = [];
+  function layout() {
+    track.innerHTML = '';
+    if (mobile.matches) { buildGrid(); setW = 0; return; }
+    gridObserver?.disconnect();
+    document.getElementById('mgrid').innerHTML = '';
+    const first = makeSet(false);
+    track.appendChild(first);
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    setW = first.getBoundingClientRect().width + gap;          // one full loop
+    starts = [...first.children].map((f) => f.offsetLeft);
+    const copies = Math.ceil(innerWidth / Math.max(setW, 1)) + 1;
+    for (let i = 0; i < copies; i++) track.appendChild(makeSet(true));
+  }
+
+  /* ---------------- motion ---------------- */
+  let target = 0, current = 0, dragging = false;
+  let hovering = false, holdUntil = 0, drift = 0, last = performance.now();
+  const mod = (n, m) => ((n % m) + m) % m;
+  const hold = () => { holdUntil = performance.now() + RESUME_AFTER * 1000; };
+
+  function render(now) {
+    const dt = Math.min((now - last) / 1000, 0.1); last = now;
+    // drift eases to a stop on hover / interaction and eases back in afterwards
+    const want = (REDUCED || hovering || dragging || now < holdUntil || stage.classList.contains('is-leaving')) ? 0 : DRIFT * Math.max(innerWidth, 1100) / 1920;
+    drift += (want - drift) * Math.min(1, dt * 3);
+    target += drift * dt;
+    if (!dragging) current += (target - current) * (REDUCED ? 1 : EASE);
+    if (Math.abs(target - current) < 0.05) current = target;
+    if (setW) track.style.transform = `translate3d(${-mod(current, setW).toFixed(2)}px,0,0)`;
+    requestAnimationFrame(render);
+  }
+
+  // Hover over an image pauses the drift (mouse only; touch has no hover)
+  track.addEventListener('pointerover', (e) => { if (e.pointerType === 'mouse' && e.target.closest('.item')) hovering = true; });
+  track.addEventListener('pointerout',  (e) => { if (e.pointerType === 'mouse' && !e.relatedTarget?.closest?.('.item')) hovering = false; });
+  stage.addEventListener('focusin',  () => { hovering = true; });   // keyboard users get a still gallery
+  stage.addEventListener('focusout', () => { hovering = false; });
+
+  // Wheel / trackpad: vertical or horizontal scrolling both move the gallery
+  stage.addEventListener('wheel', (e) => {
+    e.preventDefault(); hold();
+    const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerWidth : 1;
+    target += (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) * unit * WHEEL_SPEED;
+  }, { passive: false });
+
+  // Drag / swipe with a little throw at the end
+  let startX = 0, startPos = 0, lastX = 0, lastT = 0, vel = 0, moved = false;
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    dragging = true; moved = false;
+    startX = lastX = e.clientX; startPos = current; lastT = performance.now(); vel = 0;
+  });
+  addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 5 && !moved) { moved = true; stage.classList.add('is-dragging'); stage.setPointerCapture?.(e.pointerId); }
+    if (!moved) return;
+    current = target = startPos - dx;
+    const now = performance.now();
+    vel = (e.clientX - lastX) / Math.max(now - lastT, 1);
+    lastX = e.clientX; lastT = now;
+  });
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false; stage.classList.remove('is-dragging'); hold();
+    if (moved && !REDUCED) target -= vel * THROW * 16;
+  };
+  addEventListener('pointerup', endDrag);
+  addEventListener('pointercancel', endDrag);
+
+  // Click an image: a drag never counts as a click; a real click fades the others, then opens the project
+  stage.addEventListener('click', (e) => {
+    const a = e.target.closest('.item a');
+    if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; return; }
+    if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;   // new-tab clicks behave normally
+    e.preventDefault();
+    if (REDUCED) { location.href = a.href; return; }
+    a.closest('.item').classList.add('is-picked');
+    stage.classList.add('is-leaving');
+    setTimeout(() => { location.href = a.href; }, 380);
+  }, true);
+  // coming back with the browser's back button: show everything again
+  addEventListener('pageshow', () => { stage.classList.remove('is-leaving'); document.querySelectorAll('.is-picked').forEach((n) => n.classList.remove('is-picked')); });
+
+  // Arrow keys: move one image at a time
+  function step(dir) {
+    hold();
+    const p = mod(target, setW);
+    const all = [...starts.map((s) => s - setW), ...starts, ...starts.map((s) => s + setW)];
+    const next = dir > 0 ? all.find((s) => s > p + 2) : [...all].reverse().find((s) => s < p - 2);
+    target += next - p;
+  }
+  addEventListener('keydown', (e) => {
+    if (!setW) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); step(-1); }
+  });
+
+  /* ---------------- start ---------------- */
+  layout();
+  requestAnimationFrame((t) => { last = t; render(t); });
+  requestAnimationFrame(() => stage.classList.add('is-ready'));
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(layout, 120); });
+  mobile.addEventListener('change', layout);
+  document.fonts && document.fonts.ready.then(layout);
   </script>
+  <script src="workmenu.js"></script>
+  <script src="menu.js"></script>
 </body>
 </html>
