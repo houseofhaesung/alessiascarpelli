@@ -111,6 +111,34 @@ window.WORKS = [
   },
 ];
 
+/* =====================================================================
+   HOME (desktop) — the four category spines, in order, and the photos that
+   slide out when one opens (3–4 each is ideal).
+   (label colours are automatic: the open one is pink with white text,
+    the others white with black text and a black border)
+   photos   a project id from WORKS above (opens that project), or
+            { src, w, h, alt } for any other photo (opens the category page)
+   TODO: Pattern Making and Clo 3D use About-page photos for now — swap in their own.
+   ===================================================================== */
+window.HOME = [
+  { id: 'fashion-design', label: 'Fashion Designer', look: 'pink',
+    photos: ['work-02', 'work-04', 'work-06'] },
+  { id: 'styling-art-direction', label: 'Stylist & Art Director', look: 'outline',
+    photos: ['work-03', 'work-01', 'work-05'] },
+  { id: 'pattern-making', label: 'Pattern Maker', look: 'black',
+    photos: [
+      { src: 'images/about-02b.jpg', w: 1326, h: 1618, alt: 'Choosing fabric rolls' },
+      { src: 'images/about-02a.jpg', w: 546, h: 809, alt: 'Collection overview moodboard' },
+      { src: 'images/about-05b.jpg', w: 672, h: 803, alt: 'Fitting a top made of recycled plastic' },
+    ] },
+  { id: 'clo3d', label: 'Clo 3D Designer', look: 'pink-ink',
+    photos: [
+      { src: 'images/about-03a.jpg', w: 395, h: 701, alt: '3D garment: pink faux-fur coat' },
+      { src: 'images/about-03b.jpg', w: 393, h: 701, alt: '3D garment: black tee and metallic trousers' },
+      { src: 'images/about-03c.jpg', w: 395, h: 701, alt: '3D garment: long grey faux-fur coat' },
+    ] },
+];
+
 /* Phone home page: photos in this order, laid out as
    one full-width photo, then two side by side, then full width, then two … and repeat. */
 window.MOBILE_HOME = ['work-01', 'work-02', 'work-04', 'work-06', 'work-05', 'work-03'];

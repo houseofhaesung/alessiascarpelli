@@ -21,6 +21,7 @@
     tailwind.config = {
       theme: {
         extend: {
+          screens: { lg: '768px' },      // desktop layout from 768px (iPad) up
           colors: { ink: '#0b0b0b', pink: '#FF3686' },
           fontFamily: {
             display: ['"Faculty Glyphic"', 'serif'],
@@ -66,7 +67,7 @@
     .strip a:focus-visible { outline: 2px solid #FF3686; outline-offset: 3px; }
     .strip-empty { padding: 28px var(--mpad); font-size: 15px; color: #555; }
 
-    @media (min-width: 1024px) {
+    @media (min-width: 768px) {
       html, body { height: 100%; overflow: hidden; }
       .wp-head { position: fixed; left: 0; top: 0; padding: 0 0 0 var(--pad); z-index: 20; pointer-events: none; }
       .wp-head * { pointer-events: auto; }
@@ -97,7 +98,7 @@
     .desc p + p { margin-top: .8em; }
     .credits { margin-top: 16px; display: grid; grid-template-columns: auto 1fr; gap: 2px 16px; font-size: 14px; line-height: 1.4; }
     .credits dt { font-weight: 700; }
-    @media (min-width: 1024px) {
+    @media (min-width: 768px) {
       .strip > .cover { width: 57.92vw; }
       .strip > .info { width: 39.6vw; padding: 1.0vh 0 0 1.25vw; height: auto; align-self: flex-start; }
       .heading { font-size: clamp(30pt, min(3.333vw, 5.93vh), 54pt); }
@@ -106,7 +107,7 @@
       .strip > .extra { width: auto; }
       .strip > .extra img { width: auto; }
     }
-    @media (max-width: 1023.98px) { .info { order: -1; } }
+    @media (max-width: 767.98px) { .info { order: -1; } }
   </style>
 </head>
 
@@ -176,7 +177,7 @@
     /* Desktop: the wheel (or a sideways trackpad swipe, or ←/→) slides the strip sideways, softly.
        Phones: the strip is a normal vertical column. */
     function sideways(viewport, strip) {
-      const desktop = matchMedia('(min-width: 1024px)');
+      const desktop = matchMedia('(min-width: 768px)');
       const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
       let x = 0, target = 0, max = 0;
       const measure = () => { max = Math.max(0, strip.scrollWidth - viewport.clientWidth); target = Math.min(target, max); };
@@ -210,7 +211,7 @@
        the vertical scroll is turned into sideways movement of the strip (softly eased).
        Once the last photo is in view the page carries on down to the footer. */
     function scrollSideways(wrap, strip) {
-      const desktop = matchMedia('(min-width: 1024px)');
+      const desktop = matchMedia('(min-width: 768px)');
       const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
       let x = 0, max = 0;
       const measure = () => {

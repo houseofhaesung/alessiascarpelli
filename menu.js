@@ -1,4 +1,4 @@
-/* Mobile menu (below 1024px): the stack icon opens a full-screen menu
+/* Mobile menu (below 768px): the stack icon opens a full-screen menu
    on a 90% white veil; the icon turns into an X to close it.
    Used by index.html, about.html and work.html. */
 (() => {
@@ -36,8 +36,8 @@
     /* Site cursor: the logo A, tilted 45° like an arrow. Black A on light backgrounds,
        white A on the black footer (images/cursor*.png, 2x for sharp screens).
        The click point is the top of the A. Desktop only: a mouse/trackpad on a screen
-       1024px or wider (the desktop layout). Phones and tablets keep their normal pointer. */
-    @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+       768px or wider (the desktop layout). Phones and tablets keep their normal pointer. */
+    @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
       html, body, body * {
         cursor: url("images/cursor.png") 4 1, auto !important;
         cursor: -webkit-image-set(url("images/cursor.png") 1x, url("images/cursor@2x.png") 2x) 4 1, auto !important;
@@ -56,7 +56,7 @@
     .mm-work.is-open { display: block; }
     .mobile-menu .mm-work a { display: block; font-family: "ABC Areal", "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 400; text-transform: none; font-size: clamp(18px, 6.77vw, 31px); line-height: 1.29; }
     .mobile-menu .mm-work li { opacity: 1; transform: none; }
-    @media (min-width: 1024px) { .mobile-menu { display: none !important; } }
+    @media (min-width: 768px) { .mobile-menu { display: none !important; } }
     @media (prefers-reduced-motion: reduce) { .mobile-menu, .mobile-menu li { transition: none; } }
   `;
   const style = document.createElement('style');
@@ -111,5 +111,5 @@
   addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') { setOpen(false); btn.focus(); }
   });
-  matchMedia('(min-width: 1024px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
+  matchMedia('(min-width: 768px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
 })();

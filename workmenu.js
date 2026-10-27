@@ -1,7 +1,7 @@
-/* Work menu (desktop, 1024px and up).
+/* Work menu (desktop and tablet, 768px and up).
    Clicking WORK in the header turns it pink and slides a panel in from the left:
    a 90% white veil with the categories from works.js. "X CLOSE", Esc or a click
-   outside the panel closes it. Below 1024px the stack-icon menu (menu.js) is used.
+   outside the panel closes it. Below 768px the stack-icon menu (menu.js) is used.
    Needs works.js loaded first. Used by every page. */
 (() => {
   const C = window.CATEGORIES || [];
@@ -37,7 +37,7 @@
     .wm-panel.is-open li { opacity: 1; transform: none; transition-delay: calc(.12s + var(--i) * .04s); }
     a.is-work-open { color: #FF3686 !important; }
     html.wm-lock, html.wm-lock body { overflow: hidden; }
-    @media (max-width: 1023.98px) { .wm-panel, .wm-veil { display: none !important; } }
+    @media (max-width: 767.98px) { .wm-panel, .wm-veil { display: none !important; } }
     @media (prefers-reduced-motion: reduce) { .wm-panel, .wm-panel li { transition: none; } }
   `;
   const style = document.createElement('style');
@@ -94,7 +94,7 @@
     t.setAttribute('aria-controls', 'work-menu');
     t.setAttribute('aria-expanded', 'false');
     t.addEventListener('click', (e) => {
-      if (!matchMedia('(min-width: 1024px)').matches) return;      // phones: follow the link
+      if (!matchMedia('(min-width: 768px)').matches) return;      // phones: follow the link
       e.preventDefault();
       panel.classList.contains('is-open') ? close() : open(t);
     });

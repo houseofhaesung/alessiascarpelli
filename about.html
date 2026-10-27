@@ -25,6 +25,7 @@
     tailwind.config = {
       theme: {
         extend: {
+          screens: { lg: '768px' },      // desktop layout from 768px (iPad) up
           colors: { ink: '#0b0b0b', pink: '#FF3686' },
           fontFamily: {
             display: ['"Faculty Glyphic"', 'serif'],
@@ -60,7 +61,7 @@
     /* ================= Desktop =================
        Each section is one 1920×1080 frame. One scroll gesture glides to the next frame;
        the text and photos of the frame on screen fade in, the others fade out. */
-    @media (min-width: 1024px) {
+    @media (min-width: 768px) {
       .frame { position: relative; height: 100vh; min-height: 640px; }
       /* photo boxes measured from the frames, relative to the photo area (578px → right edge) */
       .fig { position: absolute; left: var(--l); top: var(--t); right: var(--r); bottom: var(--b); }
@@ -244,7 +245,7 @@
                     lg:p-0 lg:absolute lg:inset-y-0 lg:left-0 lg:w-[var(--box)] lg:z-10; }
     .title { @apply font-display leading-[1.05] text-[clamp(26px,8.4vw,44px)]
                     lg:absolute lg:left-[var(--pad)] lg:top-[var(--head-top)] lg:whitespace-nowrap
-                    lg:text-[clamp(30pt,min(3.333vw,5.93vh),54pt)]; }
+                    lg:text-[clamp(22px,min(3.333vw,5.93vh),54pt)]; }
     .copy.repeat .title { @apply hidden lg:block; }     /* mobile shows a heading only where it changes */
     .txt   { @apply lg:absolute lg:left-[var(--pad)] lg:top-[var(--text-top)]; }
     .lead  { @apply mt-4 text-[clamp(18px,4.9vw,26px)] leading-[1.4] max-w-[79vw] sm:max-w-[32ch]
@@ -278,7 +279,7 @@
 
   <script>
     const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const desktop = matchMedia('(min-width: 1024px)');
+    const desktop = matchMedia('(min-width: 768px)');
     const sections = [...document.querySelectorAll('section.frame')];
     const footer = document.querySelector('.site-footer');
     document.documentElement.classList.add('js');
