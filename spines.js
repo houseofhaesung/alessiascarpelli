@@ -216,7 +216,7 @@
     // with the bands instead of the bands jumping on their own.
     function place() {
       const cs = getComputedStyle(host);
-      const T = parseFloat(cs.getPropertyValue('--top')) || 79;
+      const T = parseFloat(cs.paddingTop) || 79;                              // first band (from --top in the CSS)
       const G = parseFloat(cs.getPropertyValue('--gap')) || 0;
       const B = bands[0].offsetHeight;
       const R = Math.max(0, host.clientHeight - T - n * B - (n - 1) * G);   // height of the open row
