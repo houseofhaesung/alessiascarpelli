@@ -194,6 +194,7 @@
   function buildPhone() {
     const host = document.getElementById('mspines');
     if (!host) return;
+    const n = SECTIONS.length;
     host.innerHTML = SECTIONS.map((s, i) => {
       const photos = (s.photos || []).map((ph) => {
         const w = typeof ph === 'string' ? WORKS.find((x) => x.id === ph) : null;
@@ -203,37 +204,75 @@
         return `<a class="ms-photo" href="${href}" aria-label="${esc(w ? w.title : s.label + ': ' + (img.alt || ''))}">` +
                `<img src="${esc(img.src)}" width="${img.w}" height="${img.h}" alt="${esc(img.alt || '')}" loading="${i ? 'lazy' : 'eager'}" decoding="async" /></a>`;
       }).join('');
-      return `<button type="button" class="ms-band" data-i="${i}" style="--i:${i}">${esc(s.label)}</button>` +
-             `<div class="ms-photos">${photos}</div>`;
+      return `<button type="button" class="ms-band" data-i="${i}" aria-controls="ms-row-${i}">${esc(s.label)}</button>` +
+             `<div class="ms-row" id="ms-row-${i}"><div class="ms-scroll">${photos}</div></div>`;
     }).join('');
-    // bands and photo blocks sit side by side in one column, so every band can stay stacked
-    const secs = [...host.querySelectorAll('.ms-photos')];
     const bands = [...host.querySelectorAll('.ms-band')];
-    const TOP = 72, B = 64;                                // header height, band height
-    const under = (i) => TOP + (i + 1) * B;                // where photos of category i start once its band is stacked
-    let cur = -1;
+    const rows = [...host.querySelectorAll('.ms-row')];
+    const scrollers = rows.map((r) => r.querySelector('.ms-scroll'));
+    let open = 0;
 
-    // The band of the category being looked at is pink; the others white.
-    function update() {
-      let i = 0;
-      secs.forEach((x, k) => { if (x.getBoundingClientRect().top <= under(k) + 1) i = k; });
-      // at the very bottom of the page the last category counts as reached
-      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2) {
-        const last = secs.length - 1;
-        if (secs[last].getBoundingClientRect().top < innerHeight - 64) i = last;
-      }
-      if (i === cur) return;
-      cur = i;
-      bands.forEach((b, k) => { b.classList.toggle('is-open', k === i); b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+    // The bands never move with the finger. Only the open category's row has height:
+    // the bands above it stack under the header, the ones after it sit at the bottom.
+    function place() {
+      const cs = getComputedStyle(host);
+      const T = parseFloat(cs.paddingTop) || 66;
+      const B = bands[0].offsetHeight;
+      const R = Math.max(0, host.clientHeight - T - n * B);     // what's left of the screen
+      host.style.setProperty('--ph', R + 'px');
+      bands.forEach((b, i) => { b.classList.toggle('is-open', i === open); b.setAttribute('aria-expanded', String(i === open)); });
+      rows.forEach((r, i) => { r.style.height = (i === open ? R : 0) + 'px'; r.inert = i !== open; });
     }
-    // Tapping a band glides to the start of its photos.
-    bands.forEach((b, i) => b.addEventListener('click', () => {
-      const y = secs[i].getBoundingClientRect().top + scrollY - under(i);
-      scrollTo({ top: i === 0 ? 0 : y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-    }));
-    addEventListener('scroll', update, { passive: true });
-    addEventListener('resize', update);
-    update();
+    function openAt(i, fromEnd) {
+      i = Math.max(0, Math.min(n - 1, i));
+      if (i === open) return false;
+      const sc = scrollers[i];
+      sc.scrollTop = fromEnd ? sc.scrollHeight : 0;        // coming back up: land on its last photo
+      open = i;
+      place();
+      busyUntil = performance.now() + 900;
+      return true;
+    }
+    bands.forEach((b, i) => b.addEventListener('click', () => openAt(i)));
+
+    const atTop = (sc) => sc.scrollTop <= 2;
+    const atEnd = (sc) => sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 2;
+    let busyUntil = 0;
+
+    // Touch: a swipe that starts on the last photo and keeps going up opens the next category;
+    // one that starts on the first photo and goes down opens the previous one.
+    let sy = 0, sx = 0, startTop = false, startEnd = false;
+    host.addEventListener('touchstart', (e) => {
+      sy = e.touches[0].clientY; sx = e.touches[0].clientX;
+      startTop = atTop(scrollers[open]); startEnd = atEnd(scrollers[open]);
+    }, { passive: true });
+    host.addEventListener('touchmove', (e) => {
+      // a band area or an edge photo: the page itself must not rubber-band
+      const dy = e.touches[0].clientY - sy;
+      if (!e.target.closest('.ms-scroll') || (dy < 0 && startEnd) || (dy > 0 && startTop)) e.preventDefault();
+    }, { passive: false });
+    host.addEventListener('touchend', (e) => {
+      if (performance.now() < busyUntil) return;
+      const t = e.changedTouches[0], dy = t.clientY - sy, dx = t.clientX - sx;
+      if (Math.abs(dy) < 40 || Math.abs(dy) < Math.abs(dx) * 1.2) return;
+      if (dy < 0 && startEnd) openAt(open + 1, false);
+      else if (dy > 0 && startTop) openAt(open - 1, true);
+    }, { passive: true });
+
+    // Wheel / trackpad: same idea, one category per gesture.
+    host.addEventListener('wheel', (e) => {
+      const sc = scrollers[open], down = e.deltaY > 0;
+      const inside = e.target.closest('.ms-scroll');
+      if (inside && !(down ? atEnd(sc) : atTop(sc))) return;  // still photos to see: let it scroll
+      e.preventDefault();
+      const now = performance.now();
+      if (now < busyUntil || Math.abs(e.deltaY) < 8) { busyUntil = Math.max(busyUntil, now + 150); return; }
+      if (!inside) { sc.scrollBy({ top: down ? sc.clientHeight : -sc.clientHeight, behavior: 'smooth' }); busyUntil = now + 700; if (!(down ? atEnd(sc) : atTop(sc))) return; }
+      openAt(open + (down ? 1 : -1), !down);
+    }, { passive: false });
+
+    addEventListener('resize', place);
+    place();
     requestAnimationFrame(() => host.classList.add('is-ready'));
   }
 })();
