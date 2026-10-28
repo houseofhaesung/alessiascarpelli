@@ -194,7 +194,6 @@
   function buildPhone() {
     const host = document.getElementById('mspines');
     if (!host) return;
-    const n = SECTIONS.length;
     host.innerHTML = SECTIONS.map((s, i) => {
       const photos = (s.photos || []).map((ph) => {
         const w = typeof ph === 'string' ? WORKS.find((x) => x.id === ph) : null;
@@ -204,60 +203,37 @@
         return `<a class="ms-photo" href="${href}" aria-label="${esc(w ? w.title : s.label + ': ' + (img.alt || ''))}">` +
                `<img src="${esc(img.src)}" width="${img.w}" height="${img.h}" alt="${esc(img.alt || '')}" loading="${i ? 'lazy' : 'eager'}" decoding="async" /></a>`;
       }).join('');
-      return `<button type="button" class="ms-band" data-i="${i}" aria-controls="ms-row-${i}">${esc(s.label)}</button>` +
-             `<div class="ms-row" id="ms-row-${i}"><div class="ms-scroll">${photos}</div></div>`;
+      return `<button type="button" class="ms-band" data-i="${i}" style="--i:${i}">${esc(s.label)}</button>` +
+             `<div class="ms-photos">${photos}</div>`;
     }).join('');
+    // bands and photo blocks sit side by side in one column, so every band can stay stacked
+    const secs = [...host.querySelectorAll('.ms-photos')];
     const bands = [...host.querySelectorAll('.ms-band')];
-    const rows = [...host.querySelectorAll('.ms-row')];
-    let open = 0;
+    const TOP = 72, B = 64;                                // header height, band height
+    const under = (i) => TOP + (i + 1) * B;                // where photos of category i start once its band is stacked
+    let cur = -1;
 
-    // Accordion: every band sits in one column; only the open category's photo row has height.
-    // Opening another one shrinks the old row while the new one grows, so the photos travel
-    // with the bands instead of the bands jumping on their own.
-    function place() {
-      const cs = getComputedStyle(host);
-      const T = parseFloat(cs.paddingTop) || 79;                              // first band (from --top in the CSS)
-      const G = parseFloat(cs.getPropertyValue('--gap')) || 0;
-      const B = bands[0].offsetHeight;
-      const R = Math.max(0, host.clientHeight - T - n * B - (n - 1) * G);   // height of the open row
-      host.style.setProperty('--ph', Math.max(0, R) + 'px');                // photos fill the row, touching the bands
-      bands.forEach((b, i) => {
-        b.setAttribute('aria-expanded', String(i === open));
-        b.classList.toggle('is-open', i === open);
-      });
-      rows.forEach((r, i) => {
-        r.style.height = (i === open ? R : 0) + 'px';
-        r.classList.toggle('is-open', i === open);
-        r.inert = i !== open;
-      });
+    // The band of the category being looked at is pink; the others white.
+    function update() {
+      let i = 0;
+      secs.forEach((x, k) => { if (x.getBoundingClientRect().top <= under(k) + 1) i = k; });
+      // at the very bottom of the page the last category counts as reached
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2) {
+        const last = secs.length - 1;
+        if (secs[last].getBoundingClientRect().top < innerHeight - 64) i = last;
+      }
+      if (i === cur) return;
+      cur = i;
+      bands.forEach((b, k) => { b.classList.toggle('is-open', k === i); b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
     }
-    function openAt(i) {
-      i = Math.max(0, Math.min(n - 1, i));
-      if (i === open) return;                    // an open band stays open
-      open = i;
-      rows[i].querySelector('.ms-scroll').scrollTo({ left: 0 });
-      place();
-    }
-    bands.forEach((b, i) => b.addEventListener('click', () => openAt(i)));
-
-    // Swipe up / scroll down → next category; swipe down / scroll up → previous.
-    // Sideways swipes stay with the photo row. One gesture moves one step.
-    let sx = 0, sy = 0, busyUntil = 0;
-    host.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
-    host.addEventListener('touchend', (e) => {
-      const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
-      if (Math.abs(dy) > 40 && Math.abs(dy) > Math.abs(dx) * 1.2) openAt(open + (dy < 0 ? 1 : -1));
-    }, { passive: true });
-    host.addEventListener('wheel', (e) => {
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;           // sideways: let the photo row scroll
-      e.preventDefault();
-      const now = performance.now();
-      if (now < busyUntil || Math.abs(e.deltaY) < 8) { busyUntil = Math.max(busyUntil, now + 120); return; }
-      busyUntil = now + 700;
-      openAt(open + (e.deltaY > 0 ? 1 : -1));
-    }, { passive: false });
-    addEventListener('resize', place);
-    place();
+    // Tapping a band glides to the start of its photos.
+    bands.forEach((b, i) => b.addEventListener('click', () => {
+      const y = secs[i].getBoundingClientRect().top + scrollY - under(i);
+      scrollTo({ top: i === 0 ? 0 : y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    }));
+    addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', update);
+    update();
     requestAnimationFrame(() => host.classList.add('is-ready'));
   }
 })();
