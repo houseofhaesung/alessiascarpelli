@@ -12,6 +12,12 @@
    photos 4:5 and as tall as the space under the header, 12px apart.
    Needs works.js (window.HOME, window.WORKS) loaded first. */
 (() => {
+  // a photo, or a short silent looping video when the entry has  video: 'file.mp4'  (src = its still)
+  function media(img, attrs) {
+    const e = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    if (img.video) return `<video src="${e(img.video)}" poster="${e(img.src)}" width="${img.w}" height="${img.h}" muted loop autoplay playsinline preload="metadata" aria-label="${e(img.alt || '')}" draggable="false"></video>`;
+    return `<img src="${e(img.src)}" width="${img.w}" height="${img.h}" alt="${e(img.alt || '')}" ${attrs} />`;
+  }
   const SECTIONS = window.HOME || [];
   const WORKS = window.WORKS || [];
   const root = document.getElementById('spines');
@@ -51,7 +57,7 @@
       a.href = w ? `work.html#${encodeURIComponent(w.id)}` : `category.html#${encodeURIComponent(s.id)}`;
       a.setAttribute('aria-label', w ? w.title : `${s.label}: ${img.alt || ''}`);
       a.tabIndex = -1;                                  // reachable once the section is open
-      a.innerHTML = `<img src="${esc(img.src)}" width="${img.w}" height="${img.h}" alt="${esc(img.alt || '')}" decoding="async" draggable="false" />`;
+      a.innerHTML = media(img, 'decoding="async" draggable="false"');
       track.appendChild(a);
       return a;
     }).filter(Boolean);
@@ -62,12 +68,13 @@
   let S = 0, G = 0, H = 0, PW = 0, VW = 0, max = 0;
   const natural = [];        // each spine's x in the long row
   const openAt = [];         // scroll position at which each section is open
-  const leftMin = (i) => i * (S + G);
-  const rightMax = (i) => VW - (SECTIONS.length - i) * S - (SECTIONS.length - 1 - i) * G;
+  // labels touch each other and their photos; the gap G is only between two photos
+  const leftMin = (i) => i * S;
+  const rightMax = (i) => VW - (SECTIONS.length - i) * S;
 
   function measure() {
     S = sections[0].spine.getBoundingClientRect().width || 126;                 // spine width in px
-    G = parseFloat(getComputedStyle(sections[0].spine, '::after').width) || 0;   // gap = the white gutter (0 = touching)
+    G = parseFloat(getComputedStyle(sections[0].spine, '::after').width) || 0;   // gap between photos (from --gap)
     H = root.clientHeight;
     VW = root.clientWidth;
     PW = Math.round(H * 0.8);                           // photos are 4:5
@@ -76,10 +83,10 @@
     sections.forEach((sec, i) => {
       natural[i] = x;
       openAt[i] = Math.max(0, x - leftMin(i));
-      x += S + G;
-      sec.photos.forEach((a) => { a.style.left = x + 'px'; a.style.width = PW + 'px'; x += PW + G; });
-    });
-    max = Math.max(0, x - G - VW);
+      x += S;                                           // photos touch their label…
+      sec.photos.forEach((a, k) => { a.style.left = x + 'px'; a.style.width = PW + 'px'; x += PW + (k < sec.photos.length - 1 ? G : 0); });
+    });                                                 // …and the next label; G only between photos
+    max = Math.max(0, x - VW);
     target = Math.max(openAt[0] || 0, Math.min(target, max));
   }
 
@@ -202,7 +209,7 @@
         if (!img) return '';
         const href = w ? `work.html#${encodeURIComponent(w.id)}` : `category.html#${encodeURIComponent(s.id)}`;
         return `<a class="ms-photo" href="${href}" aria-label="${esc(w ? w.title : s.label + ': ' + (img.alt || ''))}">` +
-               `<img src="${esc(img.src)}" width="${img.w}" height="${img.h}" alt="${esc(img.alt || '')}" loading="${i ? 'lazy' : 'eager'}" decoding="async" /></a>`;
+               media(img, `loading="${i ? 'lazy' : 'eager'}" decoding="async"`) + `</a>`;
       }).join('');
       return `<button type="button" class="ms-band" data-i="${i}" aria-controls="ms-row-${i}">${esc(s.label)}</button>` +
              `<div class="ms-row" id="ms-row-${i}"><div class="ms-scroll">${photos}</div></div>`;

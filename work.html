@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Work — Alessia Scarpelli</title>
+  <meta name="description" content="Alessia Scarpelli — project." />
+
+  <!-- Favicon (same set as the other pages) -->
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+  <link rel="preload" href="fonts/FacultyGlyphic-Regular.woff2" as="font" type="font/woff2" crossorigin />
+
+  <!-- Tailwind (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          screens: { lg: '768px' },      // desktop layout from 768px (iPad) up
+          colors: { ink: '#0b0b0b', pink: '#FF3686' },
+          fontFamily: {
+            display: ['"Faculty Glyphic"', 'serif'],
+            sans: ['"ABC Areal"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Bold.woff2")    format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: "Faculty Glyphic"; src: url("fonts/FacultyGlyphic-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+
+    @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Medium.woff2")  format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+    :root {
+      --mpad: clamp(20px, 6.5vw, 32px);
+      --pad: clamp(20px, 3.6vw, 72px);
+      --col: 36.1vw;
+      --header: clamp(72px, 11.57vh, 130px);   /* 125px at 1080, with a 1px line under it */
+      --side: 32.55vw;                          /* title column: line at 625px at 1920 */
+      --thumbs: 3.02vw;                         /* thumbnail column on the right: 58px */
+    }
+    html, body { background: #fff; color: #0b0b0b; }
+    body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    img { display: block; }
+
+    /* leaving for another page: everything fades out first */
+    main { transition: opacity .4s ease; }
+    main.is-leaving, main.is-hidden { opacity: 0; }
+    @media (prefers-reduced-motion: reduce) { main { transition: none; } }
+
+    /* ---------- phones: one column ---------- */
+    main { padding-top: 78px; }
+    .side { padding: 46px var(--mpad) 34px; background: #000; color: #fff; }
+    .heading { font-family: "Faculty Glyphic", serif; font-weight: 400; margin: 0;
+               font-size: min(11vw, 48px); line-height: 1.14; }
+    .heading span { display: block; }
+    .subtitle { margin-top: 10px; font-size: min(5.4vw, 24px); line-height: 1.3; }
+    .subtitle a { color: #FF3686; text-decoration: underline; text-underline-offset: .14em; text-decoration-thickness: 1px; }
+    .subtitle a:hover, .subtitle a:focus-visible { text-decoration-thickness: 2px; outline: none; }
+    .prev { display: inline-flex; align-items: center; gap: .45em; color: #FF3686; text-transform: uppercase;
+            font-size: min(5.4vw, 24px); line-height: 1; }
+    .prev svg { width: 1.45em; height: .7em; }
+    .prev { color: #0b0b0b; transition: color .2s ease; }
+    .prev:hover, .prev:active, .prev:focus-visible { color: #FF3686 !important; outline: none; }   /* pink on hover / tap */
+    .side .prev { display: none; }
+    .after { padding: 36px var(--mpad) 56px; border-top: 1px solid #0b0b0b; margin-top: 40px; }
+    .strip { display: flex; flex-direction: column; gap: 5px; }
+    .strip figure { margin: 0; }
+    .strip img, .strip video { width: 100%; height: auto; background: #f2f2f2; display: block; }
+    .desc { order: 1; padding: 30px var(--mpad) 30px; font-size: 15px; line-height: 1.45; }
+    .strip > .cover { order: 0; }
+    .strip > .shot { order: 2; }
+    .desc p + p { margin-top: 1.4em; }
+    .thumbs { display: none; }
+
+    /* ---------- desktop: a magazine spread ----------
+       left: the title column (fixed); middle: cover, text and photos sliding sideways;
+       right edge: a thin column of thumbnails showing where you are */
+    @media (min-width: 768px) {
+      html, body { height: 100%; overflow: hidden; }
+      main { padding: 0; }
+      .frame { position: fixed; left: 0; right: 0; top: var(--header); bottom: 0;
+               border: 1px solid #0b0b0b; border-top: 0; pointer-events: none; z-index: 30; }
+      .side { position: fixed; left: 0; top: var(--header); bottom: 0; width: var(--side); padding: 6.9vh var(--pad) 0;
+              background: #000; color: #fff; z-index: 20; }       /* black title column, white type */
+      .side .prev { color: #fff; }
+      .heading { font-size: min(3.28vw, 5.83vh); line-height: 1.14; }
+      .subtitle { margin-top: .45em; font-size: min(1.63vw, 2.9vh); }
+      .side .prev { display: inline-flex; position: absolute; left: var(--pad); bottom: 6.3vh; font-size: min(1.44vw, 2.56vh); }
+      .after { display: none; }
+      .viewport { position: fixed; left: var(--side); right: var(--thumbs); top: calc(var(--header) + 1px); bottom: 1px; overflow: hidden; }
+      .strip { flex-direction: row; align-items: center; gap: 0; height: 100%; width: max-content; will-change: transform; }
+      .strip > * { flex: none; order: 0 !important; }
+      .strip > .cover, .strip > .shot { height: 100%; }
+      .strip img, .strip video { height: 100%; width: auto; object-fit: cover; display: block; }
+      .strip > .desc { align-self: flex-start; width: 22.9vw; padding: 7.2vh 0 0; margin: 0 5.6vw 0 3.54vw;
+                       font-size: min(1.04vw, 1.85vh); line-height: 1.4; }
+      .desc p + p { margin-top: 1.4em; }
+      /* photos after the text: alternately inset (80% tall, centred) and full height, 41–48px apart */
+      .strip > .shot { margin-right: 2.5vw; }
+      .strip > .shot.inset { height: 79.9%; margin-left: 0; }
+      .strip > .desc + .shot { margin-left: 0; }
+      /* a cover on white (not full-bleed): 84% tall, centred, and a 1px line before the text */
+      .strip > .cover.inset { height: 84.2%; margin-left: .55vw; }
+      .strip > .cover.inset + .desc { align-self: stretch; border-left: 1px solid #0b0b0b; width: 28.5vw;
+                                      margin-left: .15vw; padding-left: 2.97vw; }
+      .one .viewport { right: 0; }
+      .one .thumbs { display: none; }
+      .thumbs { display: flex; flex-direction: column; position: fixed; right: 0; top: calc(var(--header) + 1px); bottom: 1px;
+                width: var(--thumbs); overflow: hidden; z-index: 25; background: #fff; }
+      .thumbs button { display: block; flex: none; width: 100%; height: 6.76vh; padding: 0; border: 0; background: #f2f2f2; }
+      .thumbs img { width: 100%; height: 100%; object-fit: cover; opacity: .35; transition: opacity .4s ease; }
+      .thumbs button.is-on img, .thumbs button:hover img { opacity: 1; }
+      .thumbs button:focus-visible { outline: 2px solid #FF3686; outline-offset: -2px; }
+    }
+  </style>
+</head>
+
+<body class="font-sans">
+
+  <!-- ================= HEADER (same as about.html) ================= -->
+  <header class="fixed inset-x-0 top-0 z-50 bg-white border-b border-ink">
+    <!-- desktop -->
+    <nav class="hidden lg:flex items-center h-[var(--header)] px-[var(--pad)] relative">
+      <ul class="flex gap-[2.4vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+        <li><a href="category.html#selected-works" data-work-menu aria-current="page" class="text-pink transition-colors hover:text-pink">WORK</a></li>
+        <li><a href="about.html" class="text-ink transition-colors hover:text-pink">ABOUT</a></li>
+      </ul>
+      <a href="index.html" class="absolute left-[var(--col)] top-1/2 -translate-y-1/2" aria-label="Alessia Scarpelli — home">
+        <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(240px,24.6vw,480px)] h-auto" />
+      </a>
+      <ul class="ml-auto flex gap-[1.9vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+        <li><a href="#" class="text-ink transition-colors hover:text-pink">PRESS</a></li>
+        <li><a href="#" class="text-ink transition-colors hover:text-pink">CONTACT</a></li>
+      </ul>
+    </nav>
+    <!-- mobile: logo + stack icon (menu.js) -->
+    <nav class="lg:hidden flex items-center justify-between h-[77px] px-[var(--mpad)]">
+      <a href="index.html" aria-label="Alessia Scarpelli — home">
+        <img src="images/logo.png" alt="Alessia Scarpelli" class="h-auto" style="width: min(68.2vw, 300px)" />
+      </a>
+      <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+        <svg class="i-open" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M1 4.5h20M1 11h20M1 17.5h20"/></svg>
+        <svg class="i-close" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M3.5 3.5l15 15M18.5 3.5l-15 15"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <!-- mobile menu (opened by the stack icon) -->
+  <nav id="mobile-menu" class="mobile-menu" hidden aria-label="Menu">
+    <ul>
+      <li><a href="category.html#selected-works" data-mobile-work aria-current="page">WORK</a></li>
+      <li><a href="about.html">ABOUT</a></li>
+      <li><a href="#">PRESS</a></li>
+      <li><a href="#">CONTACT</a></li>
+    </ul>
+  </nav>
+
+  <!-- ================= PROJECT ================= -->
+  <main id="page">
+    <div class="frame" aria-hidden="true"></div>
+    <!-- title column (filled from works.js) -->
+    <aside class="side">
+      <h1 id="heading" class="heading"></h1>
+      <p id="subtitle" class="subtitle"></p>
+      <a class="prev" href="category.html"><svg viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M39 10H2M10 2L2 10l8 8"/></svg><span>Previous</span></a>
+    </aside>
+    <!-- cover, text and photos: sideways on desktop, one column on phones -->
+    <div class="viewport" id="viewport">
+      <div class="strip" id="strip"></div>
+    </div>
+    <nav class="thumbs" id="thumbs" aria-label="Photos"></nav>
+    <div class="after"><a class="prev" href="category.html"><svg viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M39 10H2M10 2L2 10l8 8"/></svg><span>Previous</span></a></div>
+  </main>
+
+  <script src="works.js?v=1028v"></script>
+  <script>
+    /* Desktop: the wheel (or a sideways trackpad swipe, or ←/→) slides the strip sideways, softly.
+       Phones: the strip is a normal vertical column. */
+    function sideways(viewport, strip) {
+      const desktop = matchMedia('(min-width: 768px)');
+      const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let x = 0, target = 0, max = 0;
+      const measure = () => { max = Math.max(0, strip.scrollWidth - viewport.clientWidth); target = Math.min(target, max); };
+      addEventListener('wheel', (e) => {                // anywhere on the page, also over the title column
+        if (!desktop.matches || document.documentElement.classList.contains('wm-lock')) return;
+        e.preventDefault();
+        const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        target = Math.max(0, Math.min(max, target + d * (e.deltaMode === 1 ? 16 : 1)));
+      }, { passive: false });
+      addEventListener('keydown', (e) => {
+        if (!desktop.matches || !['ArrowRight', 'ArrowLeft'].includes(e.key)) return;
+        if (document.documentElement.classList.contains('wm-lock')) return;
+        e.preventDefault();
+        const step = (strip.firstElementChild?.getBoundingClientRect().width || 400) + 24;
+        target = Math.max(0, Math.min(max, target + (e.key === 'ArrowRight' ? step : -step)));
+      });
+      (function tick() {
+        if (desktop.matches) {
+          x += (target - x) * (REDUCED ? 1 : 0.1);
+          if (Math.abs(target - x) < 0.1) x = target;
+          strip.style.transform = `translate3d(${-x.toFixed(1)}px,0,0)`;
+        } else strip.style.transform = '';
+        requestAnimationFrame(tick);
+      })();
+      addEventListener('resize', measure);
+      addEventListener('load', measure);
+      strip.addEventListener('load', measure, true);     // each photo that finishes loading
+      return { measure, reset() { x = target = 0; measure(); },
+               to(el) { measure(); target = Math.max(0, Math.min(max, el.offsetLeft - (el.classList.contains('inset') ? innerWidth * 0.0213 : 0))); } };
+    }
+
+    /* Desktop, with a footer below: the page scrolls normally, and while the photo stage is pinned
+       the vertical scroll is turned into sideways movement of the strip (softly eased).
+       Once the last photo is in view the page carries on down to the footer. */
+    function scrollSideways(wrap, strip) {
+      const desktop = matchMedia('(min-width: 768px)');
+      const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let x = 0, max = 0;
+      const measure = () => {
+        if (!desktop.matches) { wrap.style.removeProperty('--hh'); return; }
+        max = Math.max(0, strip.scrollWidth - innerWidth);
+        wrap.style.setProperty('--hh', (innerHeight + max) + 'px');
+      };
+      const target = () => Math.min(max, Math.max(0, scrollY - wrap.offsetTop));
+      addEventListener('wheel', (e) => {             // sideways trackpad swipes also move the strip
+        if (!desktop.matches || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+        e.preventDefault(); scrollBy(0, e.deltaX);
+      }, { passive: false });
+      addEventListener('keydown', (e) => {
+        if (!desktop.matches || !['ArrowRight', 'ArrowLeft'].includes(e.key)) return;
+        if (document.documentElement.classList.contains('wm-lock')) return;
+        e.preventDefault();
+        const step = (strip.firstElementChild?.getBoundingClientRect().width || 400) + 24;
+        scrollBy({ top: e.key === 'ArrowRight' ? step : -step, behavior: REDUCED ? 'auto' : 'smooth' });
+      });
+      (function tick() {
+        if (desktop.matches) {
+          const t = target();
+          x += (t - x) * (REDUCED ? 1 : 0.12);
+          if (Math.abs(t - x) < 0.1) x = t;
+          strip.style.transform = `translate3d(${-x.toFixed(1)}px,0,0)`;
+        } else strip.style.transform = '';
+        requestAnimationFrame(tick);
+      })();
+      addEventListener('resize', measure);
+      addEventListener('load', measure);
+      strip.addEventListener('load', measure, true);     // each photo that finishes loading
+      return { measure, reset() { x = 0; measure(); } };
+    }
+
+    // links inside main: fade out, then go (new-tab clicks behave normally)
+    function fadeLinks(main) {
+      main.addEventListener('click', (e) => {
+        const a = e.target.closest('a');
+        if (!a || e.metaKey || e.ctrlKey || e.shiftKey || a.target === '_blank') return;
+        if (a.pathname === location.pathname) return;                  // same page, only the # changes
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        e.preventDefault(); main.classList.add('is-leaving');
+        setTimeout(() => { location.href = a.href; }, 350);
+      });
+      addEventListener('pageshow', () => main.classList.remove('is-leaving'));
+    }
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const main = $('page');
+    const strip = $('strip');
+    const viewport = $('viewport');
+    const slide = sideways(viewport, strip);
+    fadeLinks(main);
+    const img = (p, eager, still) => (p.video && !still)
+      ? `<video src="${esc(p.video)}" poster="${esc(p.src)}" width="${p.w}" height="${p.h}" muted loop autoplay playsinline aria-label="${esc(p.alt || '')}"></video>`
+      : `<img src="${esc(p.src)}" width="${p.w}" height="${p.h}" alt="${esc(p.alt || '')}" ${eager ? '' : 'loading="lazy"'} decoding="async" />`;
+
+    // PREVIOUS: back to where you came from on this site, otherwise to the project's category
+    document.querySelectorAll('.prev').forEach((a) => a.addEventListener('click', (e) => {
+      let ref = null; try { ref = new URL(document.referrer); } catch (_) {}
+      if (ref && ref.origin === location.origin && ref.pathname !== location.pathname && history.length > 1) { e.preventDefault(); e.stopPropagation(); history.back(); }
+    }, true));
+
+    // thumbnails: the photos on screen are solid, the rest faded; a click slides to that photo
+    let shots = [];
+    function markThumbs() {
+      const v = viewport.getBoundingClientRect();
+      shots.forEach(({ el, btn }) => {
+        const r = el.getBoundingClientRect();
+        const seen = Math.min(r.right, v.right) - Math.max(r.left, v.left);
+        btn.classList.toggle('is-on', seen > r.width * 0.35);
+      });
+      requestAnimationFrame(markThumbs);
+    }
+
+    function show() {
+      const W = window.WORKS || [];
+      const w = W.find((x) => x.id === decodeURIComponent(location.hash.slice(1))) || W[0];
+      if (!w) return;
+      const place = window.findPlace(w.sub || w.category);
+      document.title = `${w.title} — Alessia Scarpelli`;
+      const back = `category.html#${encodeURIComponent((place.sub || place.cat).id)}`;
+      document.querySelectorAll('.prev').forEach((a) => { a.href = back; });
+      $('heading').innerHTML = (w.heading || [w.year, w.title]).filter(Boolean).map((l) => `<span>${esc(l)}</span>`).join('');
+      $('subtitle').innerHTML = w.subtitleLink
+        ? `<a href="${esc(w.subtitleLink)}" target="_blank" rel="noopener">${esc(w.subtitle || '')}</a>` : esc(w.subtitle || '');
+      $('subtitle').hidden = !w.subtitle;
+      const paras = Array.isArray(w.description) ? w.description : String(w.description || '').split(/\n\s*\n/);
+      const photos = [w.cover, ...(w.images || [])].filter(Boolean);
+      strip.innerHTML =
+        `<figure class="cover${w.coverInset ? ' inset' : ''}">${img(photos[0], true)}</figure>` +
+        (paras.filter(Boolean).length ? `<div class="desc">${paras.filter(Boolean).map((p) => `<p>${p}</p>`).join('')}</div>` : '') +
+        photos.slice(1).map((p, k) => `<figure class="shot${k % 2 === 0 ? ' inset' : ''}">${img(p, false)}</figure>`).join('');
+      const figs = [...strip.querySelectorAll('figure')];
+      $('thumbs').innerHTML = photos.map((p, k) => `<button type="button" aria-label="Photo ${k + 1}">${img(p, k < 6, true)}</button>`).join('');
+      shots = figs.map((el, k) => ({ el, btn: $('thumbs').children[k] }));
+      main.classList.toggle('one', photos.length < 2);           // a single photo: no thumbnail column
+      shots.forEach(({ el, btn }) => btn.addEventListener('click', () => slide.to(el)));
+      slide.reset();
+      requestAnimationFrame(() => main.classList.remove('is-hidden'));
+    }
+    addEventListener('hashchange', () => { main.classList.add('is-hidden'); setTimeout(show, 300); });
+    main.classList.add('is-hidden');
+    show();
+    markThumbs();
+
+  </script>
+  <script src="workmenu.js?v=1028v"></script>
+  <script src="menu.js?v=1028v"></script>
+</body>
+</html>

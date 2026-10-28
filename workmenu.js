@@ -12,7 +12,8 @@
     .wm-veil { position: fixed; inset: 0; z-index: 59; }
     .wm-panel {
       position: fixed; top: 0; bottom: 0; left: 0; z-index: 60;
-      width: 32.3vw; min-width: 360px;                       /* 620px at 1920 */
+      width: 33.23vw; min-width: 360px;                      /* 638px at 1920 */
+      border-right: 1px solid #0b0b0b;
       background: rgba(255, 255, 255, 0.9);
       transform: translateX(-100%);
       transition: transform .55s cubic-bezier(.22, 1, .36, 1);
@@ -36,7 +37,7 @@
     .wm-panel li { opacity: 0; transform: translateX(-10px); transition: opacity .4s ease, transform .4s ease; }
     .wm-panel.is-open li { opacity: 1; transform: none; transition-delay: calc(.12s + var(--i) * .04s); }
     a.is-work-open { color: #FF3686 !important; }
-    html.wm-lock, html.wm-lock body { overflow: hidden; }
+    html.wm-lock { overflow: hidden; }   /* the page itself only (not body: that would unstick pinned content behind) */
     @media (max-width: 767.98px) { .wm-panel, .wm-veil { display: none !important; } }
     @media (prefers-reduced-motion: reduce) { .wm-panel, .wm-panel li { transition: none; } }
   `;
