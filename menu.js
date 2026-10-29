@@ -22,6 +22,7 @@
     .mobile-menu a { display: inline-block; color: #0b0b0b; transition: color .2s ease; }
     .mobile-menu a:hover, .mobile-menu a:focus-visible, .mm-cats a[aria-current="page"] { color: #FF3686; outline: none; }
     /* main entries: Work, About, Press, Contact */
+    .mobile-menu .mm-label, .mobile-menu .mm-label:hover, .mobile-menu .mm-label:active { color: #0b0b0b !important; cursor: default; }
     .mm-top > li > a { font-family: "Faculty Glyphic", serif; font-weight: 400; font-size: min(10.7vw, 48px); line-height: 1.41; }
     /* Work's categories */
     .mobile-menu .mm-cats { padding: .1em 0 .3em; }
@@ -29,13 +30,13 @@
     /* a category's own pages */
     .mobile-menu .mm-subs { padding: .5em 0 .75em; }
     .mm-subs a { font-family: "ABC Areal", "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 400; font-size: min(4.85vw, 22px); line-height: 1.4; }
-    .mobile-menu li { opacity: 0; transform: translateY(8px); transition: opacity .35s ease, transform .35s ease; }
-    .mobile-menu.is-open li { opacity: 1; transform: none; }
-    .mobile-menu .mm-cats li, .mobile-menu .mm-subs li { opacity: 1; transform: none; }
+    .mobile-menu li { opacity: 0; transition: opacity .35s ease; }
+    .mobile-menu.is-open li { opacity: 1; }
+    .mobile-menu .mm-cats li, .mobile-menu .mm-subs li { opacity: 1; }
     .mobile-menu.is-open .mm-top > li:nth-child(2) { transition-delay: .04s; }
     .mobile-menu.is-open .mm-top > li:nth-child(3) { transition-delay: .08s; }
     .mobile-menu.is-open .mm-top > li:nth-child(4) { transition-delay: .12s; }
-    html.menu-open, html.menu-open body { overflow: hidden; }
+    html.menu-open { overflow: hidden; }   /* the page only — locking body too made pinned content jump */
     header img { transition: opacity .3s ease; }
     html.menu-open header img { opacity: .12; }               /* the logo fades behind the veil; the X stays */
 
@@ -75,7 +76,7 @@
     if (open) {
       menu.hidden = false;
       requestAnimationFrame(() => menu.classList.add('is-open'));
-      menu.querySelector('a')?.focus({ preventScroll: true });
+      // no automatic focus: on phones it lit the first link pink and could nudge the page
     } else {
       menu.classList.remove('is-open');
       setTimeout(() => { if (!menu.classList.contains('is-open')) menu.hidden = true; }, 300);
@@ -93,7 +94,7 @@
     work.textContent = 'Work';
     const list = document.createElement('ul');
     list.className = 'mm-cats';
-    list.innerHTML = C.map((c) => {
+    list.innerHTML = C.filter((c) => c.inMenu !== false).map((c) => {
       const subs = c.subs || [];
       const first = subs.length ? subs[0].id : c.id;
       return `<li><a href="category.html#${esc(first)}"${subs.length ? '' : cur(c.id)}>${esc(c.menu || c.title)}</a>` +
@@ -102,6 +103,8 @@
     }).join('');
     work.after(list);
     work.removeAttribute('aria-current');
+    // "Work" is a heading here, not a link: it never turns pink and tapping it does nothing
+    work.classList.add('mm-label'); work.removeAttribute('href'); work.setAttribute('role', 'heading'); work.setAttribute('aria-level', '2');
   }
   // the other entries in title case, as in the design
   menu.querySelectorAll('.mm-top > li > a').forEach((a) => { a.textContent = a.textContent.charAt(0) + a.textContent.slice(1).toLowerCase(); });

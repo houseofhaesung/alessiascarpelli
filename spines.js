@@ -193,93 +193,160 @@
   requestAnimationFrame(() => root.classList.add('is-ready'));
 
   /* ---------- Phones (below 768px) ----------
-     One screen, no page scroll. Bands of the open category and the ones before it are
-     stacked at the top (under the header); the rest wait stacked at the bottom.
-     The open category's photos fill the space between and are swiped sideways.
-     Tapping a band, or swiping up/down, opens it — the bands slide up or down to make room. Nothing closes,
-     so the last one (Clo 3D) stays open too. Measured on a 412×917 phone. */
+     An index down the left (one tab per category, like tabs on a book) and the photos
+     full-screen beside it, swiped sideways one at a time. The tab of the category on
+     screen turns pink; tapping a tab glides to that category's first photo. */
   function buildPhone() {
     const host = document.getElementById('mspines');
     if (!host) return;
-    const n = SECTIONS.length;
-    host.innerHTML = SECTIONS.map((s, i) => {
-      const photos = (s.photos || []).map((ph) => {
+    const firstOf = [];                     // index of each category's first photo
+    let k = 0;
+    const photos = SECTIONS.map((s, i) => {
+      firstOf[i] = k;
+      return (s.photos || []).map((ph) => {
         const w = typeof ph === 'string' ? WORKS.find((x) => x.id === ph) : null;
         const img = w ? w.cover : ph;
         if (!img) return '';
+        k++;
         const href = w ? `work.html#${encodeURIComponent(w.id)}` : `category.html#${encodeURIComponent(s.id)}`;
-        return `<a class="ms-photo" href="${href}" aria-label="${esc(w ? w.title : s.label + ': ' + (img.alt || ''))}">` +
-               media(img, `loading="${i ? 'lazy' : 'eager'}" decoding="async"`) + `</a>`;
+        return `<a class="ms-photo" data-cat="${i}" href="${href}" aria-label="${esc(w ? w.title : s.label + ': ' + (img.alt || ''))}">` +
+               media(img, `loading="${k > 2 ? 'lazy' : 'eager'}" decoding="async"`) + `</a>`;
       }).join('');
-      return `<button type="button" class="ms-band" data-i="${i}" aria-controls="ms-row-${i}">${esc(s.label)}</button>` +
-             `<div class="ms-row" id="ms-row-${i}"><div class="ms-scroll">${photos}</div></div>`;
     }).join('');
-    const bands = [...host.querySelectorAll('.ms-band')];
-    const rows = [...host.querySelectorAll('.ms-row')];
-    const scrollers = rows.map((r) => r.querySelector('.ms-scroll'));
-    let open = 0;
+    host.innerHTML =
+      `<nav class="ms-index" aria-label="Categories">${SECTIONS.map((s, i) => `<button type="button" class="ms-tab" data-i="${i}"><span>${esc(s.label)}</span></button>`).join('')}</nav>` +
+      `<div class="ms-scroll">${photos}</div>`;
+    const tabs = [...host.querySelectorAll('.ms-tab')];
+    const sc = host.querySelector('.ms-scroll');
+    const items = [...sc.children];
+    let on = -1, glideTo = -1, raf = 0;
 
-    // The bands never move with the finger. Only the open category's row has height:
-    // the bands above it stack under the header, the ones after it sit at the bottom.
-    function place() {
-      const cs = getComputedStyle(host);
-      const T = parseFloat(cs.paddingTop) || 66;
-      const B = bands[0].offsetHeight;
-      const R = Math.max(0, host.clientHeight - T - n * B);     // what's left of the screen
-      host.style.setProperty('--ph', R + 'px');
-      bands.forEach((b, i) => { b.classList.toggle('is-open', i === open); b.setAttribute('aria-expanded', String(i === open)); });
-      rows.forEach((r, i) => { r.style.height = (i === open ? R : 0) + 'px'; r.inert = i !== open; });
+    const step = () => (items[1] ? items[1].offsetLeft - items[0].offsetLeft : sc.clientWidth);
+    function mark(i) {
+      if (i === on) return;
+      on = i;
+      tabs.forEach((t, j) => { t.classList.toggle('is-on', j === i); t.setAttribute('aria-current', j === i ? 'true' : 'false'); });
     }
-    function openAt(i, fromEnd) {
-      i = Math.max(0, Math.min(n - 1, i));
-      if (i === open) return false;
-      const sc = scrollers[i];
-      sc.scrollTop = fromEnd ? sc.scrollHeight : 0;        // coming back up: land on its last photo
-      open = i;
-      place();
-      busyUntil = performance.now() + 900;
-      return true;
+    // the category of the photo filling the screen
+    function update() {
+      if (glideTo >= 0) return;
+      const p = Math.max(0, Math.min(items.length - 1, Math.round(sc.scrollLeft / step())));
+      mark(+items[p].dataset.cat);
     }
-    bands.forEach((b, i) => b.addEventListener('click', () => openAt(i)));
+    sc.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
 
-    const atTop = (sc) => sc.scrollTop <= 2;
-    const atEnd = (sc) => sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 2;
-    let busyUntil = 0;
+    // tapping a tab: glide through the photos in between (eased; never too fast)
+    const sine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
+    function glide(i) {
+      cancelAnimationFrame(raf);
+      const from = sc.scrollLeft, to = items[firstOf[i]].offsetLeft - items[0].offsetLeft, d = to - from;
+      mark(i); glideTo = i;
+      if (REDUCED || Math.abs(d) < 2) { sc.scrollLeft = to; glideTo = -1; return; }
+      const dur = Math.min(2800, 1000 + Math.abs(d) * 0.35), t0 = performance.now();
+      sc.classList.add('is-gliding');
+      const tick = (now) => {
+        const t = Math.min(1, (now - t0) / dur);
+        sc.scrollLeft = from + d * sine(t);
+        if (t < 1) raf = requestAnimationFrame(tick);
+        else { sc.classList.remove('is-gliding'); glideTo = -1; }
+      };
+      raf = requestAnimationFrame(tick);
+    }
+    tabs.forEach((t, i) => t.addEventListener('click', () => glide(i)));
+    // slide to one photo (used after an up/down swipe and by the wheel)
+    function slideTo(p) {
+      p = Math.max(0, Math.min(items.length - 1, p));
+      cancelAnimationFrame(raf);
+      const from = sc.scrollLeft, to = items[p].offsetLeft - items[0].offsetLeft, d = to - from;
+      if (REDUCED || Math.abs(d) < 2) { sc.scrollLeft = to; sc.classList.remove('is-gliding'); return; }
+      const dur = Math.min(900, 420 + Math.abs(d) * 0.6), t0 = performance.now();
+      sc.classList.add('is-gliding');
+      const tick = (now) => {
+        const t = Math.min(1, (now - t0) / dur);
+        sc.scrollLeft = from + d * sine(t);
+        if (t < 1) raf = requestAnimationFrame(tick); else sc.classList.remove('is-gliding');
+      };
+      raf = requestAnimationFrame(tick);
+    }
+    const nearest = () => Math.round(sc.scrollLeft / step());
 
-    // Touch: a swipe that starts on the last photo and keeps going up opens the next category;
-    // one that starts on the first photo and goes down opens the previous one.
-    let sy = 0, sx = 0, startTop = false, startEnd = false;
-    host.addEventListener('touchstart', (e) => {
-      sy = e.touches[0].clientY; sx = e.touches[0].clientX;
-      startTop = atTop(scrollers[open]); startEnd = atEnd(scrollers[open]);
+    // Swiping up/down moves the photos sideways too: the row follows the finger
+    // (up = forward, down = back) and settles on the next or previous photo.
+    let sx = 0, sy = 0, start = 0, startP = 0, mode = '';
+    sc.addEventListener('touchstart', (e) => {
+      if (glideTo >= 0) { glideTo = -1; }
+      cancelAnimationFrame(raf); sc.classList.remove('is-gliding');
+      const t = e.touches[0]; sx = t.clientX; sy = t.clientY; start = sc.scrollLeft; startP = nearest(); mode = '';
     }, { passive: true });
-    host.addEventListener('touchmove', (e) => {
-      // a band area or an edge photo: the page itself must not rubber-band
-      const dy = e.touches[0].clientY - sy;
-      if (!e.target.closest('.ms-scroll') || (dy < 0 && startEnd) || (dy > 0 && startTop)) e.preventDefault();
+    sc.addEventListener('touchmove', (e) => {
+      const t = e.touches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+      if (!mode && Math.abs(dx) + Math.abs(dy) > 8) mode = Math.abs(dy) > Math.abs(dx) ? 'v' : 'h';
+      if (mode !== 'v') return;                               // sideways: the browser scrolls as usual
+      e.preventDefault();
+      sc.classList.add('is-gliding');
+      sc.scrollLeft = start - dy;
     }, { passive: false });
-    host.addEventListener('touchend', (e) => {
-      if (performance.now() < busyUntil) return;
-      const t = e.changedTouches[0], dy = t.clientY - sy, dx = t.clientX - sx;
-      if (Math.abs(dy) < 40 || Math.abs(dy) < Math.abs(dx) * 1.2) return;
-      if (dy < 0 && startEnd) openAt(open + 1, false);
-      else if (dy > 0 && startTop) openAt(open - 1, true);
+    sc.addEventListener('touchend', (e) => {
+      if (mode !== 'v') return;
+      const dy = e.changedTouches[0].clientY - sy;
+      slideTo(Math.abs(dy) > 40 ? startP + (dy < 0 ? 1 : -1) : startP);
     }, { passive: true });
 
-    // Wheel / trackpad: same idea, one category per gesture.
-    host.addEventListener('wheel', (e) => {
-      const sc = scrollers[open], down = e.deltaY > 0;
-      const inside = e.target.closest('.ms-scroll');
-      if (inside && !(down ? atEnd(sc) : atTop(sc))) return;  // still photos to see: let it scroll
+    // mouse wheel / trackpad (e.g. a narrow desktop window): one photo per gesture
+    let wheelBusy = 0;
+    sc.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;   // sideways trackpad swipes scroll as usual
       e.preventDefault();
       const now = performance.now();
-      if (now < busyUntil || Math.abs(e.deltaY) < 8) { busyUntil = Math.max(busyUntil, now + 150); return; }
-      if (!inside) { sc.scrollBy({ top: down ? sc.clientHeight : -sc.clientHeight, behavior: 'smooth' }); busyUntil = now + 700; if (!(down ? atEnd(sc) : atTop(sc))) return; }
-      openAt(open + (down ? 1 : -1), !down);
+      if (now < wheelBusy || Math.abs(e.deltaY) < 6) { wheelBusy = Math.max(wheelBusy, now + 120); return; }
+      wheelBusy = now + 650;
+      slideTo(nearest() + (e.deltaY > 0 ? 1 : -1));
     }, { passive: false });
 
-    addEventListener('resize', place);
-    place();
+    // Autoplay: when nobody is touching, each photo stays ~2 seconds, then the row slides
+    // quickly (about 0.6s, eased) to the next one. A touch, the wheel or a tab tap pauses it;
+    // it carries on a few seconds after the last touch. After the last photo it glides back
+    // to the first.
+    const HOLD = 2000, SLIDE = 620, RESUME = 3500;
+    let nextAt = performance.now() + HOLD, autoRaf = 0, autoBusy = false;
+    const hold = () => { nextAt = performance.now() + RESUME; if (autoBusy) { cancelAnimationFrame(autoRaf); autoBusy = false; sc.classList.remove('is-gliding'); } };
+    ['touchstart', 'wheel', 'pointerdown'].forEach((ev) => sc.addEventListener(ev, hold, { passive: true }));
+    tabs.forEach((t) => t.addEventListener('click', () => { nextAt = performance.now() + RESUME + 2800; }));
+    const quick = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);   // ease in and out
+    function autoStep(now) {
+      if (!REDUCED && !desktop.matches && !autoBusy && glideTo < 0 && now > nextAt && !document.documentElement.classList.contains('menu-open')) {
+        const p = nearest();
+        if (p >= items.length - 1) { glide(0); nextAt = now + 2800 + HOLD; }
+        else {
+          const from = sc.scrollLeft, to = items[p + 1].offsetLeft - items[0].offsetLeft, d = to - from, t0 = now;
+          autoBusy = true; sc.classList.add('is-gliding');
+          const tick = (n) => {
+            const t = Math.min(1, (n - t0) / SLIDE);
+            sc.scrollLeft = from + d * quick(t);
+            if (t < 1) autoRaf = requestAnimationFrame(tick);
+            else { autoBusy = false; sc.classList.remove('is-gliding'); nextAt = performance.now() + HOLD; }
+          };
+          autoRaf = requestAnimationFrame(tick);
+        }
+      }
+      requestAnimationFrame(autoStep);
+    }
+    requestAnimationFrame(autoStep);
+
+    // fit the tab type: 17.5px with 14px above and below (as designed on a 917px phone),
+    // smaller when the four tabs would not fit the screen
+    const nav = host.querySelector('.ms-index');
+    function fitTabs() {
+      nav.style.setProperty('--tf', '100px'); nav.style.setProperty('--tp', '0px');
+      const len = tabs.reduce((t, b) => t + b.firstChild.getBoundingClientRect().height, 0) / 100;   // in em
+      const room = host.clientHeight - 24;                                                         // keep a little photo below
+      const f = Math.max(10, Math.min(17.5, (room - tabs.length * 27) / len));
+      nav.style.setProperty('--tf', f.toFixed(2) + 'px');
+      nav.style.setProperty('--tp', Math.round(f * 0.78) + 'px');
+    }
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(fitTabs);
+    addEventListener('resize', fitTabs);
+    mark(0);
     requestAnimationFrame(() => host.classList.add('is-ready'));
   }
 })();

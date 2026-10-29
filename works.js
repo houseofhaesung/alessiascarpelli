@@ -122,7 +122,12 @@ window.WORKS = [
    ===================================================================== */
 window.HOME = [
   { id: 'fashion-design', label: 'Fashion Design',
-    photos: ['stacy-15-winter', 'work-06', 'work-04', 'work-05'] },
+    photos: [
+      'stacy-15-winter',
+      { src: 'images/fashion/selected-03.jpg', w: 1200, h: 1600, alt: 'Model lying on asphalt in a patchwork denim dress and fur boots' },
+      { src: 'images/fashion/selected-02.jpg', w: 1068, h: 1600, alt: 'Model in a burgundy faux-fur top and skirt at night' },
+      'work-05',
+    ] },
   { id: 'styling-art-direction', label: 'Styling & Art Direction',
     photos: [
       'work-03',
@@ -133,7 +138,6 @@ window.HOME = [
     photos: [
       { src: 'images/fashion/pattern-02.jpg', w: 1067, h: 1600, alt: 'Iridescent snakeskin bomber jacket' },
       { src: 'images/fashion/pattern-03.jpg', w: 1067, h: 1600, alt: 'Model in a purple vinyl corset and skirt' },
-      { src: 'images/fashion/pattern-04.jpg', w: 1200, h: 1600, alt: 'Patchwork denim off-shoulder dress' },
     ] },
   { id: 'clo3d', label: 'Clo 3D',
     photos: [
@@ -155,32 +159,38 @@ window.HOME = [
            [x, y, width, height] in pixels of the 1920×1080 design
            (the photo area runs from y 336 to 1096).
            Scrolling moves from one sub-page to the next.
+   mobileWide  true = on phones the first picture spans both columns (the rest are
+               cropped to the same size in two columns)
    ===================================================================== */
 window.CATEGORIES = [
   {
     id: 'fashion-design', title: 'Fashion design', menu: 'Fashion Design',
     subs: [
       { id: 'selected-works', title: 'Selected Works',
-        works: ['stacy-15-winter', 'work-06', 'work-04', 'work-05'],
-        layout: [[0, 356, 548, 710], [563, 445, 421, 571], [993, 397, 407, 610], [1416, 356, 504, 710]] },
-      // TODO: the photos of the next three were cut from the mockups — replace with the original files
-      { id: 'concept-lookbook', title: 'Concept & Lookbook',
         photos: [
-          { src: 'images/fashion/concept-01.jpg', w: 471, h: 706, alt: 'Model in black vinyl and lilac faux-fur sleeves' },
-          { src: 'images/fashion/concept-02.jpg', w: 493, h: 330, alt: 'Group shot in black and white under arches' },
-          { src: 'images/fashion/concept-03.jpg', w: 419, h: 626, alt: 'Model in denim corset in a garden' },
-          { src: 'images/fashion/concept-04.jpg', w: 501, h: 706, alt: 'Model in a turquoise faux-fur coat' },
+          'stacy-15-winter',
+          { src: 'images/fashion/selected-02.jpg', w: 1068, h: 1600, alt: 'Model in a burgundy faux-fur top and skirt at night' },
+          { src: 'images/fashion/selected-03.jpg', w: 1200, h: 1600, alt: 'Model lying on asphalt in a patchwork denim dress and fur boots' },
+          'work-05',
         ],
-        layout: [[0, 388, 471, 706], [483, 577, 493, 330], [989, 428, 419, 626], [1419, 388, 501, 706]] },
+        layout: [[0, 356, 548, 710], [557, 450, 352, 526], [919, 394, 486, 649], [1421, 365, 498, 702]] },
+      { id: 'concept-lookbook', title: 'Concept & Lookbook', mobileWide: true,
+        photos: [
+          { src: 'images/fashion/concept-02.jpg', w: 2000, h: 1333, alt: 'Group of six models in black and white under arches' },
+          { src: 'images/fashion/concept-01.jpg', w: 471, h: 706, alt: 'Model in black vinyl and lilac faux-fur sleeves' },
+          { src: 'images/fashion/concept-03.jpg', w: 419, h: 626, alt: 'Model in denim corset in a garden' },
+        ],
+        layout: [[0, 405, 1010, 674], [1022, 494, 363, 543], [1400, 428, 520, 626]] },
+      // TODO: Keira, Layla, the vinyl wrap top and the line-up were cut from the mockups — replace with the originals
       { id: 'technical-development', title: 'Technical Development',
         photos: [
           { src: 'images/fashion/technical-01.jpg', w: 465, h: 697, alt: 'Technical sheet: Keira lace blouse' },
           { src: 'images/fashion/technical-02.jpg', w: 488, h: 358, alt: 'Technical sheet: Layla sequin halter gown' },
           { src: 'images/fashion/technical-03.jpg', w: 477, h: 706, alt: 'Model in black vinyl wrap top and iridescent trousers' },
-          { src: 'images/fashion/technical-04.jpg', w: 448, h: 645, alt: 'Model in pinstripe top and chain-fringe skirt' },
+          { src: 'images/fashion/technical-04.jpg', w: 724, h: 1299, alt: 'Model in a black slip dress on a sofa with a white bag' },
         ],
-        layout: [[0, 393, 465, 697], [483, 561, 488, 358], [973, 388, 477, 706], [1472, 449, 448, 645]] },
-      { id: 'fashion-illustration', title: 'Fashion Illustration',
+        layout: [[0, 393, 465, 697], [483, 561, 488, 358], [973, 388, 477, 706], [1472, 388, 448, 706]] },
+      { id: 'fashion-illustration', title: 'Fashion Illustration', mobileWide: true,
         photos: [
           { src: 'images/fashion/illustration-01.jpg', w: 966, h: 323, alt: 'Line-up illustration of ten looks' },
           { src: 'images/fashion/illustration-02.jpg', w: 430, h: 572, alt: 'Watercolour sketch of a purple look' },
@@ -189,24 +199,22 @@ window.CATEGORIES = [
         layout: [[0, 580, 966, 323], [1001, 475, 430, 572], [1438, 395, 458, 694]] },
     ],
   },
-  // TODO: photos cut from the mockup — replace with the original files
   { id: 'pattern-making', title: 'Pattern making', menu: 'Pattern Making',
     photos: [
-      { src: 'images/fashion/pattern-01.jpg', w: 550, h: 713, alt: 'Bouclé double-breasted coat on a dress form' },
+      { src: 'images/fashion/pattern-01.jpg', w: 384, h: 512, alt: 'Bouclé double-breasted coat on a dress form' },
       { src: 'images/fashion/pattern-02.jpg', w: 1067, h: 1600, alt: 'Iridescent snakeskin bomber jacket' },
       { src: 'images/fashion/pattern-03.jpg', w: 1067, h: 1600, alt: 'Model in a purple vinyl corset and skirt' },
-      { src: 'images/fashion/pattern-04.jpg', w: 1200, h: 1600, alt: 'Patchwork denim off-shoulder dress' },
+      'work-06',
     ],
-    layout: [[0, 340, 550, 713], [574, 392, 402, 601], [996, 370, 409, 611], [1420, 339, 500, 714]] },
-  // TODO: photos cut from the mockup — replace with the original files
+    layout: [[0, 340, 550, 713], [574, 392, 402, 601], [985, 359, 441, 660], [1434, 404, 486, 655]] },
   { id: 'clo3d', title: 'Clo 3D', menu: 'Clo3d',
     photos: [
       { src: 'images/fashion/clo3d-01.jpg', w: 900, h: 1600, alt: '3D garment: pink faux-fur coat' },
       { src: 'images/fashion/clo3d-02.jpg', w: 468, h: 720, alt: '3D garment: black polo on a mannequin' },
+      { src: 'images/fashion/clo3d-04.jpg', w: 1066, h: 1600, alt: 'White faux-fur hoodie' },
       { video: 'images/fashion/clo3d-rotation.mp4', src: 'images/fashion/clo3d-rotation-poster.jpg', w: 926, h: 1200, alt: '3D garment turning: checked corset and skirt' },
-      { src: 'images/fashion/clo3d-04.jpg', w: 498, h: 720, alt: 'White faux-fur hoodie' },
     ],
-    layout: [[0, 348, 405, 718], [416, 347, 468, 720], [900, 347, 507, 720], [1422, 347, 498, 720]] },
+    layout: [[0, 348, 405, 718], [420, 416, 388, 598], [820, 389, 452, 651], [1288, 347, 632, 720]] },
   // TODO: photos cut from the mockup — replace with the original files
   { id: 'styling-art-direction', title: 'Styling & Art Direction', menu: 'Styling & Art Direction',
     photos: [
@@ -217,6 +225,37 @@ window.CATEGORIES = [
     ],
     layout: [[4, 344, 547, 709], [569, 435, 405, 508], [987, 361, 420, 666], [1417, 343, 503, 710]] },
 ];
+
+/* PRESS — the Press page (category.html#brand-collaboration …), same layout as the Work pages.
+   It is not listed in the Work menu (inMenu: false); the header's PRESS opens it. */
+window.CATEGORIES.push({
+  id: 'press', title: 'Press', menu: 'Press', inMenu: false,
+  subs: [
+    { id: 'brand-collaboration', title: 'Brand Collaboration',
+      photos: [
+          { src: 'images/press/brand-01.jpg', w: 1066, h: 1600, alt: 'Model with arms raised in a black and white op-art crop top and skirt' },
+          { src: 'images/press/brand-02.jpg', w: 1066, h: 1600, alt: 'Model in a black vinyl cropped jacket and cut-out trousers' },
+          { src: 'images/press/brand-03.jpg', w: 902, h: 1600, alt: 'Actress on the red carpet in a sheer embellished top and wide satin trousers' },
+          { src: 'images/press/brand-04.jpg', w: 878, h: 1097, alt: 'Host in a multicoloured faux-fur coat on stage' },
+      ],
+      layout: [[0, 356, 548, 710], [581, 423, 366, 580], [958, 356, 410, 725], [1380, 379, 539, 674]] },
+    { id: 'features', title: 'Features',
+      photos: [
+          { src: 'images/press/features-01.jpg', w: 1067, h: 1600, alt: 'Model in a chain bra lying on black vinyl' },
+          { src: 'images/press/features-02.jpg', w: 1066, h: 1600, alt: 'Model in a black pinstripe jacket with ruffled sleeves on yellow' },
+          { src: 'images/press/features-03.jpg', w: 1066, h: 1600, alt: 'Model in silver cargo trousers on a beach' },
+          { src: 'images/press/features-04.jpg', w: 1143, h: 1600, alt: 'Model in a sheer lilac organza shirt and trousers' },
+      ],
+      layout: [[0, 356, 548, 710], [557, 450, 352, 526], [920, 356, 484, 725], [1421, 365, 498, 702]] },
+    { id: 'shows', title: 'Shows', mobileWide: true,
+      photos: [
+          { src: 'images/press/shows-01.jpg', w: 2000, h: 903, alt: 'Talk in a community space, audience listening' },
+          { src: 'images/press/shows-02.jpg', w: 1200, h: 1600, alt: 'Alessia smiling at a podcast microphone' },
+          { src: 'images/press/shows-03.jpg', w: 1280, h: 1600, alt: 'Poster: Once in Paris pop-up event' },
+      ],
+      layout: [[0, 514, 1010, 456], [1024, 482, 365, 543], [1400, 428, 520, 626]] },
+  ],
+});
 
 /* helpers shared by the pages */
 window.findPlace = (hash) => {
