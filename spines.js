@@ -54,7 +54,7 @@
       if (!img) return null;
       const a = document.createElement('a');
       a.className = 'sp-photo';
-      a.href = w ? `work.html#${encodeURIComponent(w.id)}` : `category.html#${encodeURIComponent(s.id)}`;
+      a.href = w ? `work.html#${encodeURIComponent(w.link || w.id)}` : `category.html#${encodeURIComponent(s.id)}`;
       a.setAttribute('aria-label', w ? w.title : `${s.label}: ${img.alt || ''}`);
       a.tabIndex = -1;                                  // reachable once the section is open
       a.innerHTML = media(img, 'decoding="async" draggable="false"');
@@ -208,7 +208,7 @@
         const img = w ? w.cover : ph;
         if (!img) return '';
         k++;
-        const href = w ? `work.html#${encodeURIComponent(w.id)}` : `category.html#${encodeURIComponent(s.id)}`;
+        const href = w ? `work.html#${encodeURIComponent(w.link || w.id)}` : `category.html#${encodeURIComponent(s.id)}`;
         return `<a class="ms-photo" data-cat="${i}" href="${href}" aria-label="${esc(w ? w.title : s.label + ': ' + (img.alt || ''))}">` +
                media(img, `loading="${k > 2 ? 'lazy' : 'eager'}" decoding="async"`) + `</a>`;
       }).join('');

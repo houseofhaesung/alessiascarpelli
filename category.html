@@ -60,8 +60,8 @@
 
     /* ---- the photos ---- */
     /* phones: two columns, top-aligned, each photo at its own shape (like a magazine spread) */
-    .strip { display: grid; grid-template-columns: 185fr 168fr; column-gap: 17px; row-gap: 29px;
-             align-items: start; padding: 36px 24px 60px 20px; }
+    .strip { display: grid; grid-template-columns: 1fr 1fr; column-gap: 9px; row-gap: 18px;
+             align-items: start; padding: 41px 20px 60px; }
     .strip img, .strip video { width: 100%; height: auto; background: #f2f2f2; display: block; }
     .strip a { display: block; position: relative; overflow: hidden; }
     .strip a img { transition: transform .8s cubic-bezier(.22, 1, .36, 1), opacity .35s ease; }
@@ -71,6 +71,11 @@
     /* phones: every picture cropped to the same size, two columns (185×276 at 412);
        on some pages (mobileWide) the first one spans both columns (368×277) */
     @media (max-width: 767.98px) {
+      /* a page with only a title (Clo 3D, Pattern Making …): the title sits in the middle of
+         the space above the photos (78 → 391px on a 412 phone) */
+      .no-subs .wp-head { height: 290px; display: flex; flex-direction: column; justify-content: center; }
+      .no-subs .wp-title { padding-top: 0; }
+      .no-subs .strip { padding-top: 23px; }
       .strip > * { height: 67vw; overflow: hidden; }          /* same height in both columns: 276px at 412 */
       .strip img, .strip video { height: 100%; object-fit: cover; }
       .strip > .wide { grid-column: 1 / -1; }
@@ -79,10 +84,11 @@
 
     @media (min-width: 768px) {
       .wp-head { position: absolute; left: 0; right: 0; top: 0; padding: 0; z-index: 20; }
-      .wp-title { position: absolute; left: 0; right: 0; top: 17.1vh; padding: 0; white-space: nowrap;
-                  font-size: min(5.1vw, 9.07vh); line-height: 1; }          /* 98px; cap line at 192px */
+      .wp-title { position: absolute; left: 0; right: 0; top: 17.6vh; padding: 0; white-space: nowrap;
+                  font-size: min(4.6875vw, 8.333vh); line-height: 1; }      /* 90px; cap line at 196px */
+      .no-subs .wp-title { top: 18.55vh; }                                   /* one-title pages: 10px lower */
       .wp-subnav { position: absolute; left: 0; right: 0; top: 27.4vh; margin: 0; white-space: nowrap;
-                   font-size: min(1.276vw, 2.27vh); line-height: 1.2; }     /* 24.5px at 1920 */
+                   font-size: min(1.0417vw, 1.852vh); line-height: 1.2; }   /* 20px at 1920 */
       .wp-subnav a { display: inline; }
       .wp-subnav .sep { display: inline; }
       /* one row, photos of different sizes at slightly different heights (magazine layout, repeats every 4) */
@@ -127,6 +133,8 @@
     /* leaving for another page: everything fades out first */
     main { transition: opacity .4s ease; }
     main.is-leaving, main.is-hidden { opacity: 0; }
+    .strip { transition: opacity .28s ease; }
+    .strip.is-swapping { opacity: 0; }
     @media (prefers-reduced-motion: reduce) { main, .strip a img { transition: none; } }
 
     /* desktop: scrolling down first slides the row sideways; after the last photo the page
@@ -160,7 +168,7 @@
       .footer-logo { width: 89.6vw; margin: 6.3vh 0 0 4.74vw; }
     }
   </style>
-  <script src="loader.js?v=1029y"></script>
+  <script src="loader.js?v=1030i"></script>
 </head>
 
 <body class="font-sans">
@@ -227,13 +235,13 @@
         <dt>VAT Number</dt>
         <dd>02646740973</dd>
         <dt>Instagram</dt>
-        <dd><a href="https://www.instagram.com/alessia.scarpelli/" target="_blank" rel="noopener">@alessia.scarpelli</a></dd>
+        <dd><a href="https://www.instagram.com/alessia_scarpelli/" target="_blank" rel="noopener">@alessia_scarpelli</a></dd>
       </dl>
     </div>
     <img class="footer-logo" src="images/logo-white.png" alt="Alessia Scarpelli" loading="lazy" />
   </footer>
 
-  <script src="works.js?v=1029v"></script>
+  <script src="works.js?v=1030i"></script>
   <script>
     /* Desktop: the wheel (or a sideways trackpad swipe, or ←/→) slides the strip sideways, softly.
        Phones: the strip is a normal vertical column. */
@@ -352,7 +360,7 @@
         ? `<video src="${esc(img.video)}" poster="${esc(img.src)}" width="${img.w}" height="${img.h}" muted loop autoplay playsinline preload="metadata" aria-label="${esc(img.alt || '')}"></video>`
         : `<img src="${esc(img.src)}" width="${img.w}" height="${img.h}" alt="${esc(img.alt || (work && work.title) || '')}" decoding="async" />`;
       const wide = asWide ? ' class="wide"' : '';
-      return work ? `<a href="work.html#${esc(work.id)}" aria-label="${esc(work.title)}"${pos}${wide}>${pic}</a>` : `<figure${pos}${wide}>${pic}</figure>`;
+      return work ? `<a href="work.html#${esc(work.link || work.id)}" aria-label="${esc(work.title)}"${pos}${wide}>${pic}</a>` : `<figure${pos}${wide}>${pic}</figure>`;
     }
     const desktop = matchMedia('(min-width: 768px)');
     const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -455,6 +463,7 @@
       place = window.findPlace(decodeURIComponent(location.hash.slice(1)).split('~')[0]);
       document.title = `${place.sub ? place.sub.title + ' — ' : ''}${place.cat.title} — Alessia Scarpelli`;
       fillHead(place, 'category.html');
+      main.classList.toggle('no-subs', !(place.cat.subs || []).length);
       // PRESS in the header is pink on the Press page
       document.querySelectorAll('[data-press]').forEach((p) => (place.cat.id === 'press' ? p.setAttribute('aria-current', 'page') : p.removeAttribute('aria-current')));
       current = -1;
@@ -473,6 +482,19 @@
       if (place && next.cat === place.cat && document.documentElement.classList.contains('paged')) {
         const i = pages.indexOf(next.sub); if (i >= 0 && i !== current) glide(i); return;
       }
+      // phones, same category (e.g. Selected Works → Concept & Lookbook): the title and the
+      // sub-navigation stay as they are; only the photos fade out and the new ones fade in
+      if (place && next.cat === place.cat) {
+        place = { cat: next.cat, sub: next.sub };
+        document.title = `${place.sub ? place.sub.title + ' — ' : ''}${place.cat.title} — Alessia Scarpelli`;
+        $('subnav').querySelectorAll('a').forEach((a) => (place.sub && a.hash.slice(1) === place.sub.id ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
+        strip.classList.add('is-swapping');
+        setTimeout(() => {
+          render();
+          requestAnimationFrame(() => requestAnimationFrame(() => strip.classList.remove('is-swapping')));
+        }, 280);
+        return;
+      }
       main.classList.add('is-hidden');
       setTimeout(() => { scrollTo(0, 0); show(); }, 300);
     });
@@ -482,7 +504,7 @@
     show();
 
   </script>
-  <script src="workmenu.js?v=1029v"></script>
-  <script src="menu.js?v=1029v"></script>
+  <script src="workmenu.js?v=1030i"></script>
+  <script src="menu.js?v=1030i"></script>
 </body>
 </html>

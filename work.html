@@ -40,11 +40,9 @@
     @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Medium.woff2")  format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
     :root {
       --mpad: clamp(20px, 6.5vw, 32px);
-      --pad: clamp(20px, 3.6vw, 72px);
-      --col: 36.1vw;
+      --pad: clamp(20px, 3.6vw, 69px);
       --header: clamp(72px, 11.57vh, 130px);   /* 125px at 1080, with a 1px line under it */
-      --side: 32.55vw;                          /* title column: line at 625px at 1920 */
-      --thumbs: 3.02vw;                         /* thumbnail column on the right: 58px */
+      --side: 32.97vw;                          /* black text column: 633px at 1920 */
     }
     html, body { background: #fff; color: #0b0b0b; }
     body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
@@ -57,71 +55,58 @@
 
     /* ---------- phones: one column ---------- */
     main { padding-top: 78px; }
-    .side { padding: 46px var(--mpad) 34px; background: #000; color: #fff; }
-    .heading { font-family: "Faculty Glyphic", serif; font-weight: 400; margin: 0;
-               font-size: min(11vw, 48px); line-height: 1.14; }
+    .side { padding: 26px var(--mpad) 40px; background: #000; color: #fff; }
+    .heading { font-family: "Faculty Glyphic", serif; font-weight: 400; margin: 22px 0 0;
+               font-size: min(11vw, 48px); line-height: 1.13; }
     .heading span { display: block; }
     .subtitle { margin-top: 10px; font-size: min(5.4vw, 24px); line-height: 1.3; }
     .subtitle a { color: #FF3686; text-decoration: underline; text-underline-offset: .14em; text-decoration-thickness: 1px; }
     .subtitle a:hover, .subtitle a:focus-visible { text-decoration-thickness: 2px; outline: none; }
-    .prev { display: inline-flex; align-items: center; gap: .45em; color: #FF3686; text-transform: uppercase;
-            font-size: min(5.4vw, 24px); line-height: 1; }
+    .lede { margin-top: 34px; font-size: 15px; line-height: 1.45; }
+    .lede.big { font-size: 18px; line-height: 1.42; }
+    .lede p + p, .txt p + p { margin-top: 1.1em; }
+    .prev { display: inline-flex; align-items: center; gap: .45em; text-transform: uppercase;
+            font-size: min(4.6vw, 20px); line-height: 1; color: #0b0b0b; transition: color .2s ease; }
+    .side .prev { color: #fff; }
     .prev svg { width: 1.45em; height: .7em; }
-    .prev { color: #0b0b0b; transition: color .2s ease; }
     .prev:hover, .prev:active, .prev:focus-visible { color: #FF3686 !important; outline: none; }   /* pink on hover / tap */
-    .side .prev { display: none; }
     .after { padding: 36px var(--mpad) 56px; border-top: 1px solid #0b0b0b; margin-top: 40px; }
     .strip { display: flex; flex-direction: column; gap: 5px; }
-    .strip figure { margin: 0; }
-    .strip img, .strip video { width: 100%; height: auto; background: #f2f2f2; display: block; }
-    .desc { order: 1; padding: 30px var(--mpad) 30px; font-size: 15px; line-height: 1.45; }
-    .strip > .cover { order: 0; }
-    .strip > .shot { order: 2; }
-    .desc p + p { margin-top: 1.4em; }
-    .thumbs { display: none; }
+    .pn { margin: 0; position: relative; }
+    .pn img, .pn video { width: 100%; height: auto; background: #f2f2f2; display: block; }
+    .pn.inset { padding: 18px var(--mpad); }
+    .pn.inset img, .pn.inset video { background: none; }
+    .txt { padding: 26px var(--mpad) 10px; font-size: 15px; line-height: 1.45; }
 
-    /* ---------- desktop: a magazine spread ----------
-       left: the title column (fixed); middle: cover, text and photos sliding sideways;
-       right edge: a thin column of thumbnails showing where you are */
+    /* ---------- desktop: black text column + photo panels sliding sideways ----------
+       Each screen is two panels side by side, split by a 1px line. A photo either fills
+       its panel or sits inside it on white, exactly where the design puts it (box). */
     @media (min-width: 768px) {
       html, body { height: 100%; overflow: hidden; }
       main { padding: 0; }
-      .frame { position: fixed; left: 0; right: 0; top: var(--header); bottom: 0;
-               border: 1px solid #0b0b0b; border-top: 0; pointer-events: none; z-index: 30; }
-      .side { position: fixed; left: 0; top: var(--header); bottom: 0; width: var(--side); padding: 6.9vh var(--pad) 0;
-              background: #000; color: #fff; z-index: 20; }       /* black title column, white type */
-      .side .prev { color: #fff; }
-      .heading { font-size: min(3.28vw, 5.83vh); line-height: 1.14; }
-      .subtitle { margin-top: .45em; font-size: min(1.63vw, 2.9vh); }
-      .side .prev { display: inline-flex; position: absolute; left: var(--pad); bottom: 6.3vh; font-size: min(1.44vw, 2.56vh); }
+      .side { position: fixed; left: 0; top: var(--header); bottom: 0; width: var(--side); padding: 0 var(--pad);
+              z-index: 20; overflow: hidden; }
+      .side .prev { position: absolute; left: var(--pad); top: min(4.8vh, 2.7vw); font-size: min(1.46vw, 2.59vh); }
+      .heading { margin: 0; padding-top: min(10.2vh, 5.75vw); font-size: min(3.333vw, 5.926vh); line-height: 1.125; }
+      .subtitle { margin-top: .55em; font-size: min(1.667vw, 2.963vh); }
+      .lede { position: absolute; left: calc(var(--pad) + .2vw); top: min(41.3vh, 23.2vw); margin: 0;
+              width: 21.5vw; font-size: min(1.042vw, 1.852vh); line-height: 1.4; }
+      .long .lede { top: min(44.6vh, 25.1vw); }   /* a four-line title: the text starts a little lower */
+      .lede.big { left: var(--pad); width: 24vw; font-size: min(1.5625vw, 2.778vh); line-height: 1.47; }
       .after { display: none; }
-      .viewport { position: fixed; left: var(--side); right: var(--thumbs); top: calc(var(--header) + 1px); bottom: 1px; overflow: hidden; }
-      .strip { flex-direction: row; align-items: center; gap: 0; height: 100%; width: max-content; will-change: transform; }
-      .strip > * { flex: none; order: 0 !important; }
-      .strip > .cover, .strip > .shot { height: 100%; }
-      .strip img, .strip video { height: 100%; width: auto; object-fit: cover; display: block; }
-      .strip > .desc { align-self: flex-start; width: 22.9vw; padding: 7.2vh 0 0; margin: 0 5.6vw 0 3.54vw;
-                       font-size: min(1.04vw, 1.85vh); line-height: 1.4; }
-      .desc p + p { margin-top: 1.4em; }
-      /* photos after the text: alternately inset (80% tall, centred) and full height, 41–48px apart */
-      .strip > .shot { margin-right: 2.5vw; }
-      .strip > .shot.inset { height: 79.9%; margin-left: 0; }
-      .strip > .desc + .shot { margin-left: 0; }
-      /* a cover on white (not full-bleed): 84% tall, centred, and a 1px line before the text */
-      .strip > .cover.inset { height: 84.2%; margin-left: .55vw; }
-      .strip > .cover.inset + .desc { align-self: stretch; border-left: 1px solid #0b0b0b; width: 28.5vw;
-                                      margin-left: .15vw; padding-left: 2.97vw; }
-      .one .viewport { right: 0; }
-      .one .thumbs { display: none; }
-      .thumbs { display: flex; flex-direction: column; position: fixed; right: 0; top: calc(var(--header) + 1px); bottom: 1px;
-                width: var(--thumbs); overflow: hidden; z-index: 25; background: #fff; }
-      .thumbs button { display: block; flex: none; width: 100%; height: 6.76vh; padding: 0; border: 0; background: #f2f2f2; }
-      .thumbs img { width: 100%; height: 100%; object-fit: cover; opacity: .35; transition: opacity .4s ease; }
-      .thumbs button.is-on img, .thumbs button:hover img { opacity: 1; }
-      .thumbs button:focus-visible { outline: 2px solid #FF3686; outline-offset: -2px; }
+      .viewport { position: fixed; left: var(--side); right: 0; top: calc(var(--header) + 1px); bottom: 0; overflow: hidden; }
+      .strip { flex-direction: row; gap: 0; height: 100%; width: max-content; will-change: transform; }
+      .pn { flex: none; width: calc((100vw - var(--side)) / 2); height: 100%; border-right: 1px solid #0b0b0b; overflow: hidden; }
+      .pn.wide { width: calc(100vw - var(--side)); }
+      .pn.inset { padding: 0; }
+      .pn img, .pn video { position: absolute; object-fit: cover; height: auto; }
+      .pn.full img, .pn.full video { inset: 0; width: 100%; height: 100%; }
+      .txt { padding: min(7.9vh, 4.43vw) min(2.97vw, 5.3vh) 0; font-size: min(1.042vw, 1.852vh); line-height: 1.4; }
+      .txt > div { max-width: 25.2vw; }
+      .txt p + p { margin-top: 1.4em; }
     }
   </style>
-  <script src="loader.js?v=1029y"></script>
+  <script src="loader.js?v=1030i"></script>
 </head>
 
 <body class="font-sans">
@@ -166,22 +151,21 @@
 
   <!-- ================= PROJECT ================= -->
   <main id="page">
-    <div class="frame" aria-hidden="true"></div>
-    <!-- title column (filled from works.js) -->
+    <!-- black column: previous, title, short text (filled from works.js) -->
     <aside class="side">
+      <a class="prev" href="category.html"><svg viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M39 10H2M10 2L2 10l8 8"/></svg><span>Previous</span></a>
       <h1 id="heading" class="heading"></h1>
       <p id="subtitle" class="subtitle"></p>
-      <a class="prev" href="category.html"><svg viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M39 10H2M10 2L2 10l8 8"/></svg><span>Previous</span></a>
+      <div id="lede" class="lede"></div>
     </aside>
-    <!-- cover, text and photos: sideways on desktop, one column on phones -->
+    <!-- photo and text panels: sideways on desktop, one column on phones -->
     <div class="viewport" id="viewport">
       <div class="strip" id="strip"></div>
     </div>
-    <nav class="thumbs" id="thumbs" aria-label="Photos"></nav>
     <div class="after"><a class="prev" href="category.html"><svg viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M39 10H2M10 2L2 10l8 8"/></svg><span>Previous</span></a></div>
   </main>
 
-  <script src="works.js?v=1029v"></script>
+  <script src="works.js?v=1030i"></script>
   <script>
     /* Desktop: the wheel (or a sideways trackpad swipe, or ←/→) slides the strip sideways, softly.
        Phones: the strip is a normal vertical column. */
@@ -215,7 +199,7 @@
       addEventListener('load', measure);
       strip.addEventListener('load', measure, true);     // each photo that finishes loading
       return { measure, reset() { x = target = 0; measure(); },
-               to(el) { measure(); target = Math.max(0, Math.min(max, el.offsetLeft - (el.classList.contains('inset') ? innerWidth * 0.0213 : 0))); } };
+               to(el) { measure(); target = Math.max(0, Math.min(max, el.offsetLeft)); } };
     }
 
     /* Desktop, with a footer below: the page scrolls normally, and while the photo stage is pinned
@@ -287,21 +271,18 @@
       if (ref && ref.origin === location.origin && ref.pathname !== location.pathname && history.length > 1) { e.preventDefault(); e.stopPropagation(); history.back(); }
     }, true));
 
-    // thumbnails: the photos on screen are solid, the rest faded; a click slides to that photo
-    let shots = [];
-    function markThumbs() {
-      const v = viewport.getBoundingClientRect();
-      shots.forEach(({ el, btn }) => {
-        const r = el.getBoundingClientRect();
-        const seen = Math.min(r.right, v.right) - Math.max(r.left, v.left);
-        btn.classList.toggle('is-on', seen > r.width * 0.35);
-      });
-      requestAnimationFrame(markThumbs);
+    function panel(p, eager) {
+      if (p.text) return `<div class="pn txt"><div>${p.text.map((t) => `<p>${t}</p>`).join('')}</div></div>`;
+      const b = p.box || [0, 0, 100, 100];
+      const full = b[2] >= 99.5 && b[3] >= 99.5;
+      const pos = full ? '' : ` style="left:${b[0]}%;top:${b[1]}%;width:${b[2]}%;height:${b[3]}%"`;
+      return `<figure class="pn ${full ? 'full' : 'inset'}${p.wide ? ' wide' : ''}">${img(p, eager).replace('<img ', `<img${pos} `).replace('<video ', `<video${pos} `)}</figure>`;
     }
 
     function show() {
       const W = window.WORKS || [];
-      const w = W.find((x) => x.id === decodeURIComponent(location.hash.slice(1))) || W[0];
+      let w = W.find((x) => x.id === decodeURIComponent(location.hash.slice(1))) || W[0];
+      if (w && w.link) { const t = W.find((x) => x.id === w.link); if (t) { history.replaceState(null, '', '#' + t.id); w = t; } }
       if (!w) return;
       const place = window.findPlace(w.sub || w.category);
       document.title = `${w.title} — Alessia Scarpelli`;
@@ -311,27 +292,21 @@
       $('subtitle').innerHTML = w.subtitleLink
         ? `<a href="${esc(w.subtitleLink)}" target="_blank" rel="noopener">${esc(w.subtitle || '')}</a>` : esc(w.subtitle || '');
       $('subtitle').hidden = !w.subtitle;
-      const paras = Array.isArray(w.description) ? w.description : String(w.description || '').split(/\n\s*\n/);
-      const photos = [w.cover, ...(w.images || [])].filter(Boolean);
-      strip.innerHTML =
-        `<figure class="cover${w.coverInset ? ' inset' : ''}">${img(photos[0], true)}</figure>` +
-        (paras.filter(Boolean).length ? `<div class="desc">${paras.filter(Boolean).map((p) => `<p>${p}</p>`).join('')}</div>` : '') +
-        photos.slice(1).map((p, k) => `<figure class="shot${k % 2 === 0 ? ' inset' : ''}">${img(p, false)}</figure>`).join('');
-      const figs = [...strip.querySelectorAll('figure')];
-      $('thumbs').innerHTML = photos.map((p, k) => `<button type="button" aria-label="Photo ${k + 1}">${img(p, k < 6, true)}</button>`).join('');
-      shots = figs.map((el, k) => ({ el, btn: $('thumbs').children[k] }));
-      main.classList.toggle('one', photos.length < 2);           // a single photo: no thumbnail column
-      shots.forEach(({ el, btn }) => btn.addEventListener('click', () => slide.to(el)));
+      const paras = (Array.isArray(w.description) ? w.description : String(w.description || '').split(/\n\s*\n/)).filter(Boolean);
+      document.querySelector('.side').classList.toggle('long', (w.heading || []).length > 3);
+      $('lede').innerHTML = paras.map((p) => `<p>${p}</p>`).join('');
+      $('lede').classList.toggle('big', paras.join(' ').length < 160);   // a short text is set larger
+      const panels = (w.panels && w.panels.length) ? w.panels : [w.cover].filter(Boolean);
+      strip.innerHTML = panels.map((p, k) => panel(p, k < 3)).join('');
       slide.reset();
       requestAnimationFrame(() => main.classList.remove('is-hidden'));
     }
     addEventListener('hashchange', () => { main.classList.add('is-hidden'); setTimeout(show, 300); });
     main.classList.add('is-hidden');
     show();
-    markThumbs();
 
   </script>
-  <script src="workmenu.js?v=1029v"></script>
-  <script src="menu.js?v=1029v"></script>
+  <script src="workmenu.js?v=1030i"></script>
+  <script src="menu.js?v=1030i"></script>
 </body>
 </html>
