@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en" class="scrolls">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Work — Alessia Scarpelli</title>
+  <meta name="description" content="Alessia Scarpelli — work: fashion design, pattern making, Clo3d, styling and art direction." />
+
+  <!-- Favicon (same set as the other pages) -->
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+  <link rel="preload" href="fonts/FacultyGlyphic-Regular.woff2" as="font" type="font/woff2" crossorigin />
+
+  <!-- Tailwind (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          screens: { lg: '768px' },      // desktop layout from 768px (iPad) up
+          colors: { ink: '#0b0b0b', pink: '#FF3686' },
+          fontFamily: {
+            display: ['"Faculty Glyphic"', 'serif'],
+            sans: ['"ABC Areal"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Medium.woff2")  format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+    @font-face { font-family: "ABC Areal"; src: url("fonts/ABCAreal-Bold.woff2")    format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: "Faculty Glyphic"; src: url("fonts/FacultyGlyphic-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+
+    :root {
+      --mpad: clamp(20px, 6.5vw, 32px);
+      --pad: clamp(20px, 3.6vw, 72px);
+      --col: 36.1vw;
+      --header: clamp(72px, 11.57vh, 130px);   /* 125px at 1080, with a 1px line under it */
+    }
+    html, body { background: #fff; color: #0b0b0b; }
+    body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    img { display: block; }
+
+    /* ---- magazine cover: big centred title, sub-sections under it ---- */
+    .wp-head { padding: 0 var(--mpad); text-align: center; }
+    .wp-title { font-family: "Faculty Glyphic", serif; font-weight: 400; text-transform: uppercase;
+                line-height: 1.13; margin: 0; padding-top: 36px;              /* phone: cap line at 128px */
+                font-size: min(14.6vw, 66px); }
+    .wp-subnav { margin-top: 18px; font-weight: 500; font-size: min(5.5vw, 25px); line-height: 1.24; }
+    .wp-subnav a { display: block; color: #0b0b0b; transition: color .2s ease; }
+    .wp-subnav a:hover, .wp-subnav a:focus-visible, .wp-subnav a[aria-current="page"] { color: #FF3686; outline: none; }
+    .wp-subnav .sep { display: none; padding: 0 .25em; }
+
+    /* ---- the photos ---- */
+    /* phones: two columns, top-aligned, each photo at its own shape (like a magazine spread) */
+    .strip { display: grid; grid-template-columns: 1fr 1fr; column-gap: 9px; row-gap: 18px;
+             align-items: start; padding: 41px 20px 60px; }
+    .strip img, .strip video { width: 100%; height: auto; background: #f2f2f2; display: block; }
+    .strip a { display: block; position: relative; overflow: hidden; }
+    .strip a img { transition: transform .8s cubic-bezier(.22, 1, .36, 1), opacity .35s ease; }
+    .strip a:hover img { transform: scale(1.025); }
+    .strip a:focus-visible { outline: 2px solid #FF3686; outline-offset: 3px; }
+    .strip-empty { padding: 28px var(--mpad); font-size: 15px; color: #555; text-align: center; }
+    /* phones: every picture cropped to the same size, two columns (185×276 at 412);
+       on some pages (mobileWide) the first one spans both columns (368×277) */
+    @media (max-width: 767.98px) {
+      /* a page with only a title (Clo 3D, Pattern Making …): the title sits in the middle of
+         the space above the photos (78 → 391px on a 412 phone) */
+      .no-subs .wp-head { height: 290px; display: flex; flex-direction: column; justify-content: center; }
+      .no-subs .wp-title { padding-top: 0; }
+      .no-subs .strip { padding-top: 23px; }
+      .strip > * { height: 67vw; overflow: hidden; }          /* same height in both columns: 276px at 412 */
+      .strip img, .strip video { height: 100%; object-fit: cover; }
+      .strip > .wide { grid-column: 1 / -1; }
+      .strip > .wide img { object-position: 38% 50%; }
+    }
+
+    @media (min-width: 768px) {
+      .wp-head { position: absolute; left: 0; right: 0; top: 0; padding: 0; z-index: 20; }
+      .wp-title { position: absolute; left: 0; right: 0; top: 17.6vh; padding: 0; white-space: nowrap;
+                  font-size: min(4.6875vw, 8.333vh); line-height: 1; }      /* 90px; cap line at 196px */
+      .no-subs .wp-title { top: 18.55vh; }                                   /* one-title pages: 10px lower */
+      .wp-subnav { position: absolute; left: 0; right: 0; top: 27.4vh; margin: 0; white-space: nowrap;
+                   font-size: min(1.0417vw, 1.852vh); line-height: 1.2; }   /* 20px at 1920 */
+      .wp-subnav a { display: inline; }
+      .wp-subnav .sep { display: inline; }
+      /* one row, photos of different sizes at slightly different heights (magazine layout, repeats every 4) */
+      .viewport { position: absolute; left: 0; right: 0; top: 31.11vh; height: 70.37vh; overflow: hidden; }   /* photo area: y 336–1096 at 1080 */
+      .strip { display: flex; align-items: flex-start; gap: 1.39vh; padding: 0 var(--pad); height: 100%;
+               width: max-content; will-change: transform; }
+      .strip > a { flex: none; }
+      .strip > a:nth-child(4n+1) { width: 47.4vh;  height: 61.39vh; }
+      .strip > a:nth-child(4n+2) { width: 35.09vh; height: 44.17vh; margin-top: 7.78vh; }
+      .strip > a:nth-child(4n+3) { width: 35.28vh; height: 52.78vh; margin-top: 2.5vh; }
+      .strip > a:nth-child(4n)   { width: 43.61vh; height: 61.48vh; }
+      .strip img { height: 100%; width: 100%; object-fit: cover; }
+      .strip-empty { position: absolute; left: 0; right: 0; top: 40vh; padding: 0; font-size: clamp(14px, 1.04vw, 20px); }
+    }
+
+
+    /* ---- Fashion Design / Clo 3D: one screen-wide page per sub-section, side by side.
+       Scrolling slides the row sideways (sub-section after sub-section), then the footer. ---- */
+    .strip > figure { margin: 0; }
+    .strip > figure img { width: 100%; height: auto; background: #f2f2f2; }
+    @media (min-width: 768px) {
+      html.paged { scrollbar-width: none; }
+      html.paged::-webkit-scrollbar { display: none; }
+      .paged .viewport { overflow: visible; }
+      .paged .strip { display: flex; align-items: stretch; gap: 0; padding: 0; }
+      /* each sub-page is exactly as wide as its photos, and the next one follows after the
+         same gap as between two photos, so the row reads as one continuous line */
+      .paged .strip { --bw: min(100vw, 177.8vh); --board-gap: calc(var(--bw) * .0068); }   /* 13px at 1920 */
+      .board { position: relative; flex: none; height: 100%; width: calc(var(--bw) * var(--ew) / 1920); }
+      .board + .board { margin-left: var(--board-gap); }
+      /* the photos sit on a board shaped like the design (1920×664), scaled to fit the screen */
+      .bd { position: absolute; top: 0; left: calc(var(--bw) * var(--ex) / -1920);
+            width: var(--bw); height: calc(var(--bw) * .39583); }   /* the 1920×760 design, moved so its photos start at the board edge */
+      .strip .bd > * { position: absolute; margin: 0; left: var(--x); top: var(--y); width: var(--w); height: var(--h); }
+      .bd img, .bd video { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .bd a { display: block; overflow: hidden; }
+      .bd a img { transition: transform .8s cubic-bezier(.22, 1, .36, 1); }
+      .bd a:hover img { transform: scale(1.025); }
+      .wp-subnav a { cursor: pointer; }
+    }
+
+    /* leaving for another page: everything fades out first */
+    main { transition: opacity .4s ease; }
+    main.is-leaving, main.is-hidden { opacity: 0; }
+    .strip { transition: opacity .28s ease; }
+    .strip.is-swapping { opacity: 0; }
+    @media (prefers-reduced-motion: reduce) { main, .strip a img { transition: none; } }
+
+    /* desktop: scrolling down first slides the row sideways; after the last photo the page
+       goes on: a 1px line 66px under the photos, then the footer 24px below it */
+    main.cat { padding-top: 78px; }
+    @media (min-width: 768px) {
+      main.cat { padding-top: 0; }
+      .cat .hwrap { position: relative; height: var(--hh, 102.6vh); border-bottom: 1px solid #0b0b0b; }
+      .cat .hstage { position: sticky; top: 0; height: 102.6vh; overflow: hidden; }
+      html .site-footer { margin-top: 2.22vh; }
+    }
+    @media (max-width: 767.98px) { .cat { border-bottom: 1px solid #0b0b0b; } }
+
+    /* ---- black footer (same as the About page) ---- */
+    .site-footer { background: #0b0b0b; color: #fff; display: flex; flex-direction: column;
+                   margin-top: 24px; padding: 56px var(--mpad) 48px; }
+    .contacts { display: flex; gap: 32px; }
+    .contact-col { font-size: clamp(15px, min(1.38vw, 2.45vh), 28px); line-height: 1.21; }
+    .contact-col dt { font-family: "Faculty Glyphic", serif; font-size: 1.24em; line-height: 1.1; }
+    .contact-col dt:not(:first-child) { margin-top: .9em; }
+    .contact-col dd { color: #FF3686; }
+    .contact-col dd a { color: #FF3686; text-underline-offset: 3px; }
+    .contact-col dd a:hover, .contact-col dd a:focus-visible { text-decoration: underline; outline: none; }
+    .contact-col address { font-style: normal; }
+    .footer-logo { width: 100%; height: auto; margin-top: 56px; }
+    @media (min-width: 768px) {
+      .site-footer { padding: 6.67vh 0 10.45vh; }
+      .contacts { gap: 0; padding-left: 4.17vw; }
+      .contact-col { width: 14.63vw; }
+      .contact-col:last-child { width: auto; }
+      .footer-logo { width: 89.6vw; margin: 6.3vh 0 0 4.74vw; }
+    }
+  </style>
+  <script src="loader.js?v=1030i"></script>
+</head>
+
+<body class="font-sans">
+
+  <!-- ================= HEADER (same as about.html) ================= -->
+  <header class="fixed inset-x-0 top-0 z-50 bg-white border-b border-ink">
+    <!-- desktop -->
+    <nav class="hidden lg:flex items-center h-[var(--header)] px-[var(--pad)] relative">
+      <ul class="flex gap-[2.4vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+        <li><a href="category.html#selected-works" data-work-menu class="hd-link">WORK</a></li>
+        <li><a href="category.html#brand-collaboration" class="hd-link" data-press>PRESS</a></li>
+      </ul>
+      <a href="index.html" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" aria-label="Alessia Scarpelli — home">
+        <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(240px,24.6vw,480px)] h-auto" />
+      </a>
+      <ul class="ml-auto flex gap-[1.9vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+        <li><a href="about.html" class="hd-link">ABOUT</a></li>
+        <li><a href="contact.html" class="hd-link">CONTACT</a></li>
+      </ul>
+    </nav>
+    <!-- mobile: logo + stack icon (menu.js) -->
+    <nav class="lg:hidden flex items-center justify-between h-[77px] px-[var(--mpad)]">
+      <a href="index.html" aria-label="Alessia Scarpelli — home">
+        <img src="images/logo.png" alt="Alessia Scarpelli" class="h-auto" style="width: min(68.2vw, 300px)" />
+      </a>
+      <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+        <svg class="i-open" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M1 4.5h20M1 11h20M1 17.5h20"/></svg>
+        <svg class="i-close" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M3.5 3.5l15 15M18.5 3.5l-15 15"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <!-- mobile menu (opened by the stack icon) -->
+  <nav id="mobile-menu" class="mobile-menu" hidden aria-label="Menu">
+    <ul>
+      <li><a href="category.html#selected-works" data-mobile-work aria-current="page">WORK</a></li>
+      <li><a href="about.html">ABOUT</a></li>
+      <li><a href="category.html#brand-collaboration" data-press>PRESS</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
+    </ul>
+  </nav>
+
+  <!-- ================= CATEGORY ================= -->
+  <main id="page" class="cat">
+    <div class="hwrap" id="hwrap"><div class="hstage" id="hstage">
+    <!-- category heading + sub-pages (filled from works.js) -->
+    <div class="wp-head">
+      <h1 id="title" class="wp-title"></h1>
+      <nav id="subnav" class="wp-subnav" aria-label="Sections"></nav>
+    </div>
+    <div class="viewport" id="viewport">
+      <div class="strip" id="strip"></div>
+    </div>
+    </div></div>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="contacts">
+      <dl class="contact-col">
+        <dt>General Inquiry</dt>
+        <dd><a href="mailto:alessiascarpelli8@gmail.com">alessiascarpelli8@gmail.com</a></dd>
+        <dd><a href="tel:+393937388350">+39 3937388350</a></dd>
+        <dt>VAT Number</dt>
+        <dd>02646740973</dd>
+        <dt>Instagram</dt>
+        <dd><a href="https://www.instagram.com/alessia_scarpelli/" target="_blank" rel="noopener">@alessia_scarpelli</a></dd>
+      </dl>
+    </div>
+    <img class="footer-logo" src="images/logo-white.png" alt="Alessia Scarpelli" loading="lazy" />
+  </footer>
+
+  <script src="works.js?v=1030i"></script>
+  <script>
+    /* Desktop: the wheel (or a sideways trackpad swipe, or ←/→) slides the strip sideways, softly.
+       Phones: the strip is a normal vertical column. */
+    function sideways(viewport, strip) {
+      const desktop = matchMedia('(min-width: 768px)');
+      const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let x = 0, target = 0, max = 0;
+      const measure = () => { max = Math.max(0, strip.scrollWidth - viewport.clientWidth); target = Math.min(target, max); };
+      viewport.addEventListener('wheel', (e) => {
+        if (!desktop.matches) return;
+        e.preventDefault();
+        const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        target = Math.max(0, Math.min(max, target + d * (e.deltaMode === 1 ? 16 : 1)));
+      }, { passive: false });
+      addEventListener('keydown', (e) => {
+        if (!desktop.matches || !['ArrowRight', 'ArrowLeft'].includes(e.key)) return;
+        if (document.documentElement.classList.contains('wm-lock')) return;
+        e.preventDefault();
+        const step = (strip.firstElementChild?.getBoundingClientRect().width || 400) + 24;
+        target = Math.max(0, Math.min(max, target + (e.key === 'ArrowRight' ? step : -step)));
+      });
+      (function tick() {
+        if (desktop.matches) {
+          x += (target - x) * (REDUCED ? 1 : 0.1);
+          if (Math.abs(target - x) < 0.1) x = target;
+          strip.style.transform = `translate3d(${-x.toFixed(1)}px,0,0)`;
+        } else strip.style.transform = '';
+        requestAnimationFrame(tick);
+      })();
+      addEventListener('resize', measure);
+      addEventListener('load', measure);
+      return { measure, reset() { x = target = 0; measure(); } };
+    }
+
+    /* Desktop, with a footer below: the page scrolls normally, and while the photo stage is pinned
+       the vertical scroll is turned into sideways movement of the strip (softly eased).
+       Once the last photo is in view the page carries on down to the footer. */
+    function scrollSideways(wrap, strip) {
+      const desktop = matchMedia('(min-width: 768px)');
+      const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let x = 0, max = 0, exact = false;
+      const measure = () => {
+        if (!desktop.matches) { max = 0; wrap.style.removeProperty('--hh'); return; }
+        max = Math.max(0, strip.scrollWidth - innerWidth);
+        wrap.style.setProperty('--hh', (innerHeight * 1.026 + max) + 'px');
+      };
+      const target = () => Math.min(max, Math.max(0, scrollY - wrap.offsetTop));
+      addEventListener('wheel', (e) => {             // sideways trackpad swipes also move the strip
+        if (!desktop.matches || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+        e.preventDefault(); scrollBy(0, e.deltaX);
+      }, { passive: false });
+      addEventListener('keydown', (e) => {
+        if (!desktop.matches || !['ArrowRight', 'ArrowLeft'].includes(e.key)) return;
+        if (document.documentElement.classList.contains('wm-lock') || document.documentElement.classList.contains('paged')) return;
+        e.preventDefault();
+        const step = (strip.firstElementChild?.getBoundingClientRect().width || 400) + 24;
+        scrollBy({ top: e.key === 'ArrowRight' ? step : -step, behavior: REDUCED ? 'auto' : 'smooth' });
+      });
+      (function tick() {
+        if (desktop.matches) {
+          const t = target();
+          x += (t - x) * (REDUCED || exact ? 1 : 0.12);      // during a click glide the glide itself is the easing
+          if (Math.abs(t - x) < 0.1) x = t;
+          strip.style.transform = `translate3d(${-x.toFixed(1)}px,0,0)`;
+        } else strip.style.transform = '';
+        requestAnimationFrame(tick);
+      })();
+      addEventListener('resize', measure);
+      addEventListener('load', measure);
+      strip.addEventListener('load', measure, true);     // each photo that finishes loading
+      return { measure, reset() { x = 0; measure(); }, snap() { x = target(); },
+               exact(v) { exact = v; }, get x() { return x; }, get max() { return max; } };
+    }
+
+    // links inside main: fade out, then go (new-tab clicks behave normally)
+    function fadeLinks(main) {
+      main.addEventListener('click', (e) => {
+        const a = e.target.closest('a');
+        if (!a || e.metaKey || e.ctrlKey || e.shiftKey || a.target === '_blank') return;
+        if (a.pathname === location.pathname) return;                  // same page, only the # changes
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        e.preventDefault(); main.classList.add('is-leaving');
+        setTimeout(() => { location.href = a.href; }, 350);
+      });
+      addEventListener('pageshow', () => main.classList.remove('is-leaving'));
+    }
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    function fillHead(place, link) {
+      $('title').textContent = place.cat.title;
+      const subs = place.cat.subs || [];
+      $('subnav').innerHTML = subs.map((s) =>
+        `<a href="${link}#${esc(s.id)}"${place.sub && s.id === place.sub.id ? ' aria-current="page"' : ''}>${esc(s.title)}</a>`
+      ).join('<span class="sep" aria-hidden="true">|</span>');
+      $('subnav').hidden = !subs.length;
+    }
+
+    const main = $('page');
+    const strip = $('strip');
+    const slide = scrollSideways($('hwrap'), strip);
+    fadeLinks(main);
+
+    // what a sub-page (or a category without sub-pages) shows: projects (links) or plain pictures
+    function itemsOf(cat, sub) {
+      const src = sub || cat;
+      if (src.photos) return src.photos.map((p) => {
+        const w = typeof p === 'string' ? window.WORKS.find((x) => x.id === p) : null;
+        return w ? { img: w.cover, work: w } : { img: p };
+      }).filter((it) => it.img);
+      return window.worksIn({ cat, sub }).map((w) => ({ img: w.cover, work: w }));
+    }
+    function itemHTML({ img, work }, b, asWide) {
+      const pos = b ? ` style="--x:${(b[0] / 19.2).toFixed(3)}%;--y:${((b[1] - 336) / 7.6).toFixed(3)}%;--w:${(b[2] / 19.2).toFixed(3)}%;--h:${(b[3] / 7.6).toFixed(3)}%"` : '';
+      const pic = img.video
+        ? `<video src="${esc(img.video)}" poster="${esc(img.src)}" width="${img.w}" height="${img.h}" muted loop autoplay playsinline preload="metadata" aria-label="${esc(img.alt || '')}"></video>`
+        : `<img src="${esc(img.src)}" width="${img.w}" height="${img.h}" alt="${esc(img.alt || (work && work.title) || '')}" decoding="async" />`;
+      const wide = asWide ? ' class="wide"' : '';
+      return work ? `<a href="work.html#${esc(work.link || work.id)}" aria-label="${esc(work.title)}"${pos}${wide}>${pic}</a>` : `<figure${pos}${wide}>${pic}</figure>`;
+    }
+    const desktop = matchMedia('(min-width: 768px)');
+    const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // laid out like the design: every sub-page (or the category itself) has a layout
+    const pagesOf = (cat) => (cat.subs && cat.subs.length ? cat.subs : [null]);
+    const isPaged = (cat) => desktop.matches && pagesOf(cat).every((x) => (x || cat).layout);
+
+    let place = null, pages = [], current = -1;
+    function render() {
+      document.querySelector('.strip-empty')?.remove();
+      const paged = isPaged(place.cat);
+      document.documentElement.classList.toggle('paged', paged);
+      pages = paged ? pagesOf(place.cat) : [place.sub];
+      let count = 0;
+      strip.innerHTML = paged
+        ? pages.map((sub) => {
+            const items = itemsOf(place.cat, sub); count += items.length;
+            const L = (sub || place.cat).layout;
+            const ex = Math.min(...L.map((b) => b[0])), ew = Math.max(...L.map((b) => b[0] + b[2])) - ex;
+            return `<div class="board" data-sub="${esc(sub ? sub.id : '')}" style="--ex:${ex};--ew:${ew}"><div class="bd">${items.map((it, i) => itemHTML(it, L[i])).join('')}</div></div>`;
+          }).join('')
+        : (() => { const items = itemsOf(place.cat, place.sub); count = items.length; const mw = (place.sub || place.cat).mobileWide; return items.map((it, i) => itemHTML(it, null, mw && i === 0)).join(''); })();
+      // the first and last sub-page sit in the middle of the screen when they are shown
+      if (paged) padBoards(); else { strip.style.paddingLeft = strip.style.paddingRight = ''; }
+      if (!count) {
+        const p = document.createElement('p'); p.className = 'strip-empty'; p.textContent = 'Projects coming soon.';
+        $('hstage').appendChild(p);
+      }
+    }
+    function padBoards() {
+      {
+        const b = strip.querySelectorAll('.board');
+        if (!b.length) return;
+        strip.style.paddingLeft = Math.max(0, (innerWidth - b[0].offsetWidth) / 2) + 'px';
+        strip.style.paddingRight = Math.max(0, (innerWidth - b[b.length - 1].offsetWidth) / 2) + 'px';
+      }
+      slide.measure();
+    }
+    addEventListener('resize', () => { if (document.documentElement.classList.contains('paged')) padBoards(); });
+    function markSub(i) {
+      if (i === current || !pages[i]) return;
+      current = i;
+      const sub = pages[i];
+      $('subnav').querySelectorAll('a').forEach((a) => (a.hash.slice(1) === sub.id ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
+      history.replaceState(null, '', '#' + sub.id);
+      document.title = `${sub.title} — ${place.cat.title} — Alessia Scarpelli`;
+    }
+    const wrap = $('hwrap');
+    // scroll position that puts sub-page i in the middle of the screen
+    const boards = () => strip.querySelectorAll('.board');
+    const xOf = (i) => { const b = boards()[i]; return b ? Math.max(0, Math.min(slide.max, b.offsetLeft + b.offsetWidth / 2 - innerWidth / 2)) : 0; };
+    const yOf = (i) => wrap.offsetTop + xOf(i);
+    // the sub-page nearest the middle of the screen
+    const nearestSub = () => { let best = 0, d = 1e9; boards().forEach((b, i) => { const c = Math.abs(b.offsetLeft + b.offsetWidth / 2 - (slide.x + innerWidth / 2)); if (c < d) { d = c; best = i; } }); return best; };
+
+    // clicking a sub-page: glide there through the ones in between, like the home page
+    // (eased in and out; longer distances take longer, but never too fast or too slow)
+    const GLIDE_MIN = 1400, GLIDE_MAX = 4200;
+    const sine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
+    let raf = 0, glideTo = -1;
+    function glide(i) {
+      cancelAnimationFrame(raf);
+      const from = scrollY, to = yOf(i), d = to - from;
+      glideTo = i; markSub(i);                                   // the clicked one lights up straight away
+      if (REDUCED || Math.abs(d) < 2) { scrollTo(0, to); slide.snap(); glideTo = -1; return; }
+      const dur = Math.min(GLIDE_MAX, GLIDE_MIN + Math.abs(d) * 0.55), t0 = performance.now();
+      slide.exact(true);
+      const step = (now) => {
+        const t = Math.min(1, (now - t0) / dur);
+        scrollTo(0, from + d * sine(t));
+        if (t < 1) raf = requestAnimationFrame(step); else { slide.exact(false); glideTo = -1; }
+      };
+      raf = requestAnimationFrame(step);
+    }
+    // a hand on the wheel stops a glide
+    addEventListener('wheel', () => { if (glideTo >= 0) { cancelAnimationFrame(raf); slide.exact(false); glideTo = -1; } }, { passive: true });
+
+    // which sub-page is on screen → pink in the sub-navigation
+    (function watch() {
+      if (document.documentElement.classList.contains('paged') && glideTo < 0 && pages.length > 1) {
+        markSub(nearestSub());
+      }
+      requestAnimationFrame(watch);
+    })();
+
+    $('subnav').addEventListener('click', (e) => {
+      const a = e.target.closest('a');
+      if (!a || !document.documentElement.classList.contains('paged')) return;
+      e.preventDefault();
+      glide(pages.findIndex((x) => x && x.id === a.hash.slice(1)));
+    });
+    addEventListener('keydown', (e) => {
+      if (!document.documentElement.classList.contains('paged') || document.documentElement.classList.contains('wm-lock')) return;
+      if (!['ArrowRight', 'ArrowLeft'].includes(e.key) || pages.length < 2) return;
+      e.preventDefault();
+      glide(Math.max(0, Math.min(pages.length - 1, (glideTo >= 0 ? glideTo : current) + (e.key === 'ArrowRight' ? 1 : -1))));
+    });
+
+    function show() {
+      place = window.findPlace(decodeURIComponent(location.hash.slice(1)).split('~')[0]);
+      document.title = `${place.sub ? place.sub.title + ' — ' : ''}${place.cat.title} — Alessia Scarpelli`;
+      fillHead(place, 'category.html');
+      main.classList.toggle('no-subs', !(place.cat.subs || []).length);
+      // PRESS in the header is pink on the Press page
+      document.querySelectorAll('[data-press]').forEach((p) => (place.cat.id === 'press' ? p.setAttribute('aria-current', 'page') : p.removeAttribute('aria-current')));
+      current = -1;
+      render();
+      slide.reset();
+      if (document.documentElement.classList.contains('paged')) {
+        const i = Math.max(0, pages.indexOf(place.sub));
+        requestAnimationFrame(() => { slide.measure(); scrollTo(0, i ? yOf(i) : 0); slide.snap(); markSub(i); });
+      } else scrollTo(0, 0);
+      requestAnimationFrame(() => main.classList.remove('is-hidden'));
+    }
+
+    // switching from the Work menu: inside the same category just glide; otherwise fade and swap
+    addEventListener('hashchange', () => {
+      const next = window.findPlace(decodeURIComponent(location.hash.slice(1)));
+      if (place && next.cat === place.cat && document.documentElement.classList.contains('paged')) {
+        const i = pages.indexOf(next.sub); if (i >= 0 && i !== current) glide(i); return;
+      }
+      // phones, same category (e.g. Selected Works → Concept & Lookbook): the title and the
+      // sub-navigation stay as they are; only the photos fade out and the new ones fade in
+      if (place && next.cat === place.cat) {
+        place = { cat: next.cat, sub: next.sub };
+        document.title = `${place.sub ? place.sub.title + ' — ' : ''}${place.cat.title} — Alessia Scarpelli`;
+        $('subnav').querySelectorAll('a').forEach((a) => (place.sub && a.hash.slice(1) === place.sub.id ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
+        strip.classList.add('is-swapping');
+        setTimeout(() => {
+          render();
+          requestAnimationFrame(() => requestAnimationFrame(() => strip.classList.remove('is-swapping')));
+        }, 280);
+        return;
+      }
+      main.classList.add('is-hidden');
+      setTimeout(() => { scrollTo(0, 0); show(); }, 300);
+    });
+    desktop.addEventListener('change', show);
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';   // always open at the chosen sub-page
+    main.classList.add('is-hidden');
+    show();
+
+  </script>
+  <script src="workmenu.js?v=1030i"></script>
+  <script src="menu.js?v=1030i"></script>
+</body>
+</html>
