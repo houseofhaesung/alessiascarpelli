@@ -106,7 +106,7 @@
       .txt p + p { margin-top: 1.4em; }
     }
   </style>
-  <script src="loader.js?v=1030i"></script>
+  <script src="loader.js?v=1030l"></script>
 </head>
 
 <body class="font-sans">
@@ -165,7 +165,7 @@
     <div class="after"><a class="prev" href="category.html"><svg viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M39 10H2M10 2L2 10l8 8"/></svg><span>Previous</span></a></div>
   </main>
 
-  <script src="works.js?v=1030i"></script>
+  <script src="works.js?v=1030l"></script>
   <script>
     /* Desktop: the wheel (or a sideways trackpad swipe, or ←/→) slides the strip sideways, softly.
        Phones: the strip is a normal vertical column. */
@@ -290,7 +290,8 @@
       document.querySelectorAll('.prev').forEach((a) => { a.href = back; });
       $('heading').innerHTML = (w.heading || [w.year, w.title]).filter(Boolean).map((l) => `<span>${esc(l)}</span>`).join('');
       $('subtitle').innerHTML = w.subtitleLink
-        ? `<a href="${esc(w.subtitleLink)}" target="_blank" rel="noopener">${esc(w.subtitle || '')}</a>` : esc(w.subtitle || '');
+        ? `<a href="${esc(w.subtitleLink)}" target="_blank" rel="noopener">${esc(w.subtitle || '')}</a>`
+        : w.subtitlePink ? `<a>${esc(w.subtitle || '')}</a>` : esc(w.subtitle || '');
       $('subtitle').hidden = !w.subtitle;
       const paras = (Array.isArray(w.description) ? w.description : String(w.description || '').split(/\n\s*\n/)).filter(Boolean);
       document.querySelector('.side').classList.toggle('long', (w.heading || []).length > 3);
@@ -306,7 +307,7 @@
     show();
 
   </script>
-  <script src="workmenu.js?v=1030i"></script>
-  <script src="menu.js?v=1030i"></script>
+  <script src="workmenu.js?v=1030l"></script>
+  <script src="menu.js?v=1030l"></script>
 </body>
 </html>
