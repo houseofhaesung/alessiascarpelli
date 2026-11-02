@@ -128,12 +128,12 @@
       .ms-scroll.is-gliding { scroll-snap-type: none; }
       .ms-photo { flex: none; width: 100%; height: 100%; scroll-snap-align: start; scroll-snap-stop: always; display: block; background: #f2f2f2; }
       .ms-photo img, .ms-photo video { width: 100%; height: 100%; object-fit: cover; display: block; }
-      /* along the bottom: a white band, CLICK HERE TO VIEW FULL ARCHIVE (still), opens the page of the
+      /* along the bottom: a white band, VIEW FULL ARCHIVE (still), opens the page of the
          category on screen; pink when touched. 51px on a 917px phone, at any screen size */
       .ms-scroll { bottom: 51px; }
       .ms-band { position: absolute; left: 0; right: 0; bottom: 0; height: 51px; background: #fff; border-top: 1px solid #0b0b0b;
                  display: flex; align-items: center; justify-content: center; z-index: 3; }
-      .ms-band span { font-family: "Faculty Glyphic", serif; font-weight: 400; font-size: min(4.6vw, 19px); line-height: 1;
+      .ms-band span { font-family: "Faculty Glyphic", serif; font-weight: 400; font-size: var(--tf, 17px); line-height: 1;   /* same size as the tabs */
                       text-transform: uppercase; white-space: nowrap; color: #0b0b0b; transition: color .2s ease; }
       .ms-band:hover span, .ms-band:active span, .ms-band:focus-visible span { color: #FF3686; }
       .mspines:not(.is-ready) .ms-tab { transition: none; }
@@ -141,7 +141,7 @@
     }
 
   </style>
-  <script src="loader.js?v=1102zw"></script>
+  <script src="loader.js?v=1102zx"></script>
 </head>
 
 <body class="font-sans">
@@ -191,9 +191,9 @@
   <main id="mspines" class="mspines" aria-label="Work, by category"></main>
 
   <!-- Order matters: works.js first (the content), then the scripts that use it -->
-  <script src="works.js?v=1102zw"></script>
-  <script src="spines.js?v=1102zw"></script>
-  <script src="workmenu.js?v=1102zw"></script>
-  <script src="menu.js?v=1102zw"></script>
+  <script src="works.js?v=1102zx"></script>
+  <script src="spines.js?v=1102zx"></script>
+  <script src="workmenu.js?v=1102zx"></script>
+  <script src="menu.js?v=1102zx"></script>
 </body>
 </html>

@@ -232,7 +232,7 @@
       `<nav class="ms-index" aria-label="Categories">${SECTIONS.map((s, i) => `<button type="button" class="ms-tab" data-i="${i}"><span>${esc(s.label)}</span></button>`).join('')}</nav>` +
       `<div class="ms-scroll">${photos}</div>` +
       `<a class="ms-band" href="category.html#${encodeURIComponent(SECTIONS[0].id)}" aria-label="View full archive: ${esc(SECTIONS[0].label)}">` +
-      `<span>Click here to view full archive</span></a>`;
+      `<span>View full archive</span></a>`;
     const tabs = [...host.querySelectorAll('.ms-tab')];
     const sc = host.querySelector('.ms-scroll');
     const items = [...sc.children];
@@ -361,6 +361,7 @@
       const room = host.clientHeight - (host.querySelector('.ms-band')?.offsetHeight || 0) - 24;                                                         // keep a little photo below
       const f = Math.max(10, Math.min(17.5, (room - tabs.length * 27) / len));
       nav.style.setProperty('--tf', f.toFixed(2) + 'px');
+      host.style.setProperty('--tf', f.toFixed(2) + 'px');   // the bottom band uses the same size as the tabs
       nav.style.setProperty('--tp', Math.round(f * 0.78) + 'px');
     }
     (document.fonts ? document.fonts.ready : Promise.resolve()).then(fitTabs);
