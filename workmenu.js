@@ -21,15 +21,15 @@
       font-family: "ABC Areal", "Helvetica Neue", Helvetica, Arial, sans-serif; color: #0b0b0b;
     }
     .wm-panel.is-open { transform: none; }
-    .wm-top { height: var(--header, clamp(72px, 10.4vh, 116px)); display: flex; align-items: center; padding-left: var(--pad, 3.6vw); }
+    .wm-top { height: var(--header, clamp(72px, 10.4vh, 116px)); display: flex; align-items: center; padding-left: 2.7vw; }   /* same margin as the header */
     .wm-close { font-family: "Faculty Glyphic", serif; font-weight: 400; font-size: clamp(14px, 1.4vw, 28px); line-height: 1; letter-spacing: 0; color: #0b0b0b; transition: color .2s ease; }
     .wm-close:hover:not(.is-fresh) { color: #FF3686; }
     .hd-link { color: #0b0b0b; transition: color .2s ease; }
     .hd-link:hover, .hd-link:focus-visible, .hd-link[aria-current="page"] { color: #FF3686; outline: none; }
     .wm-close:focus-visible { outline: 2px solid #FF3686; outline-offset: 4px; }
-    .wm-body { padding: 0 var(--pad, 3.6vw) 6vh; margin-top: calc(13.8vh - var(--header, clamp(72px, 10.4vh, 116px))); }
+    .wm-body { padding: 0 2.7vw 6vh; margin-top: calc(13.8vh - var(--header, clamp(72px, 10.4vh, 116px))); }
     .wm-title { font-family: "Faculty Glyphic", serif; font-weight: 400; line-height: 1.05;
-                font-size: clamp(30pt, min(3.6vw, 6.4vh), 72pt); }
+                font-size: clamp(24pt, min(2.6vw, 4.6vh), 52pt); }
     .wm-list { margin-top: 1.6vh; }
     .wm-more { margin-top: 1.5vh !important; }
     .wm-cat > a, .wm-cat > span { display: inline-block; font-family: "Faculty Glyphic", serif;
@@ -40,7 +40,7 @@
     .wm-panel a:hover, .wm-panel a:active, .wm-panel a:focus-visible, .wm-cat a[aria-current="page"], .wm-subs a[aria-current="page"] { color: #FF3686; outline: none; }
     .wm-more { margin-top: .2vh; }
     .wm-big > a { display: inline-block; font-family: "Faculty Glyphic", serif; color: #0b0b0b; transition: color .2s ease;
-                  font-size: clamp(30pt, min(3.6vw, 6.4vh), 72pt); line-height: 1.33; }
+                  font-size: clamp(24pt, min(2.6vw, 4.6vh), 52pt); line-height: 1.33; }
     .wm-panel li { opacity: 0; transform: translateX(-10px); transition: opacity .4s ease, transform .4s ease; }
     .wm-panel.is-open li { opacity: 1; transform: none; transition-delay: calc(.12s + var(--i) * .04s); }
     a.is-work-open { visibility: hidden; }   /* X CLOSE takes its place */

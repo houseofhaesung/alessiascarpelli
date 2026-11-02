@@ -57,6 +57,8 @@
     html, body { background: #fff; color: #0b0b0b; }
     @media (min-width: 768px) { html, body { height: 100%; overflow: hidden; overscroll-behavior: none; } }
     body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    body .site-footer { margin-top: 0 !important; }   /* web and phones: the video sits right on the black footer, no white strip */
+    .frame.contact .media { padding-top: 0 !important; padding-bottom: 0 !important; border: 0 !important; }
     b, strong { font-weight: 700; }
     img { display: block; }
     .fig { margin: 0; }
@@ -102,7 +104,7 @@
     html.js .reveal.is-in { opacity: 1; transform: none; }
     @media (prefers-reduced-motion: reduce) { html.js .reveal { transition: none; transform: none; } }
   </style>
-  <script src="loader.js?v=1103c"></script>
+  <script src="loader.js?v=1103e"></script>
 </head>
 
 <body class="font-sans">
@@ -292,7 +294,7 @@
                     lg:mt-[2.9vh] lg:max-w-none lg:w-[var(--bw)] lg:text-[clamp(13px,min(1.04vw,1.85vh),20px)] lg:leading-[1.4]; }
 
     /* footer (black): 30px under the frame, contacts 76px inside it, the logo 1720px wide with 128px below it */
-    .site-footer  { @apply relative flex flex-col bg-ink text-white mt-[30px] px-[var(--mpad)] pt-2 pb-12
+    .site-footer  { @apply relative flex flex-col bg-ink text-white mt-0 px-[var(--mpad)] pt-2 pb-12
                            lg:mt-[2.78vh] lg:px-0 lg:pt-[6.67vh] lg:pb-[10.45vh]; }
     /* the Contact frame: black text column, white type, pink links */
     .frame.contact .copy { @apply bg-ink text-white lg:border-0; }
@@ -455,8 +457,8 @@
     goTo(0, true);
     requestAnimationFrame(() => show(0));
   </script>
-  <script src="works.js?v=1103c"></script>
-  <script src="workmenu.js?v=1103c"></script>
-  <script src="menu.js?v=1103c"></script>
+  <script src="works.js?v=1103e"></script>
+  <script src="workmenu.js?v=1103e"></script>
+  <script src="menu.js?v=1103e"></script>
 </body>
 </html>
