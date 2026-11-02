@@ -89,4 +89,33 @@
     setTimeout(pop, 300 - FIRST);                                  // …the triangles pop in…
     setTimeout(() => { location.href = url.href; }, 300 + FILL_ALL + 250);   // …then the next page
   }, true);
+
+  /* No orphans: a paragraph never ends with one word alone on its last line —
+     the last two words are tied together (a non-breaking space), and browsers that
+     can also balance the last lines with text-wrap: pretty. Runs again whenever a page
+     fills in its text (project pages, category pages). */
+  (() => {
+    const st = document.createElement('style');
+    st.textContent = 'p, dd, blockquote, figcaption { text-wrap: pretty; }';
+    document.head.appendChild(st);
+    const SEL = 'p, dd, blockquote, figcaption';
+    function fix(el) {
+      if (el.closest('nav, header, button')) return;
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      let last = null, n;
+      while ((n = walker.nextNode())) if (n.data.trim()) last = n;
+      if (!last) return;
+      const words = el.textContent.trim().split(/\s+/);
+      if (words.length < 4) return;
+      const t = last.data.replace(/\s+$/, '');
+      const i = t.lastIndexOf(' ');
+      if (i > 0 && t.length - i < 24) last.data = t.slice(0, i) + ' ' + t.slice(i + 1) + last.data.slice(t.length);
+    }
+    const run = (root) => { (root.matches && root.matches(SEL) ? [root] : []).concat([...(root.querySelectorAll ? root.querySelectorAll(SEL) : [])]).forEach(fix); };
+    document.addEventListener('DOMContentLoaded', () => {
+      run(document.body);
+      new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((nd) => nd.nodeType === 1 && run(nd))))
+        .observe(document.body, { childList: true, subtree: true });
+    });
+  })();
 })();

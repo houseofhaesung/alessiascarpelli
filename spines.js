@@ -48,6 +48,15 @@
     spine.innerHTML = `<span class="sp-label">${esc(s.label)}</span>`;
     root.appendChild(spine);
 
+    // the black band right after the label: VIEW FULL ARCHIVE runs upwards; opens the category page
+    const band = document.createElement('a');
+    band.className = 'sp-band';
+    band.href = `category.html#${encodeURIComponent(s.id)}`;
+    band.setAttribute('aria-label', `View full archive: ${s.label}`);
+    band.tabIndex = -1;
+    band.innerHTML = '<span>View full archive</span>';
+    root.appendChild(band);                             // stays right next to its label; the photos slide past under it
+
     const photos = (s.photos || []).map((ph) => {
       const w = typeof ph === 'string' ? WORKS.find((x) => x.id === ph) : null;
       const img = w ? w.cover : ph;
@@ -57,15 +66,16 @@
       a.href = w ? `work.html#${encodeURIComponent(w.link || w.id)}` : `category.html#${encodeURIComponent(s.id)}`;
       a.setAttribute('aria-label', w ? w.title : `${s.label}: ${img.alt || ''}`);
       a.tabIndex = -1;                                  // reachable once the section is open
+      if (img.fit || (img.w && img.h && img.w / img.h < 0.8)) a.dataset.r = img.w / img.h;   // portraits narrower than 4:5 are shown whole (heads never cut); fit: true forces it
       a.innerHTML = media(img, 'decoding="async" draggable="false"');
       track.appendChild(a);
       return a;
     }).filter(Boolean);
-    return { spine, photos };
+    return { spine, band, photos };
   });
 
   /* ---------- geometry ---------- */
-  let S = 0, G = 0, H = 0, PW = 0, VW = 0, max = 0;
+  let S = 0, G = 0, B = 0, H = 0, PW = 0, VW = 0, max = 0;
   const natural = [];        // each spine's x in the long row
   const openAt = [];         // scroll position at which each section is open
   // labels touch each other and their photos; the gap G is only between two photos
@@ -75,6 +85,7 @@
   function measure() {
     S = sections[0].spine.getBoundingClientRect().width || 126;                 // spine width in px
     G = parseFloat(getComputedStyle(sections[0].spine, '::after').width) || 0;   // gap between photos (from --gap)
+    B = sections[0].band.getBoundingClientRect().width || 0;                    // the black band after a label
     H = root.clientHeight;
     VW = root.clientWidth;
     PW = Math.round(H * 0.8);                           // photos are 4:5
@@ -84,7 +95,8 @@
       natural[i] = x;
       openAt[i] = Math.max(0, x - leftMin(i));
       x += S;                                           // photos touch their label…
-      sec.photos.forEach((a, k) => { a.style.left = x + 'px'; a.style.width = PW + 'px'; x += PW + (k < sec.photos.length - 1 ? G : 0); });
+                                                        // (the black band lies over the first photo: no extra gap)
+      sec.photos.forEach((a, k) => { const pw = a.dataset.r ? Math.round(H * a.dataset.r) : PW; a.style.left = x + 'px'; a.style.width = pw + 'px'; x += pw + (k < sec.photos.length - 1 ? G : 0); });
     });                                                 // …and the next label; G only between photos
     max = Math.max(0, x - VW);
     target = Math.max(openAt[0] || 0, Math.min(target, max));
@@ -116,6 +128,7 @@
       sections.forEach((sec, i) => {
         const x = spineAt ? spineAt(i) : spineX(i, p);
         sec.spine.style.transform = `translate3d(${x.toFixed(1)}px,0,0)`;
+        sec.band.style.transform = `translate3d(${(x + S).toFixed(1)}px,0,0)`;
       });
       // the open section = the last one whose spine has reached the left stack
       // (after a click, the clicked one lights up straight away; the ones passed on the way don't)
@@ -127,6 +140,8 @@
           sec.spine.classList.toggle('is-open', i === open);
           sec.spine.setAttribute('aria-expanded', String(i === open));
           sec.photos.forEach((a) => { a.tabIndex = i === open ? 0 : -1; });
+          sec.band.tabIndex = i === open ? 0 : -1;
+          sec.band.classList.toggle('is-open', i === open);
         });
       }
     }
@@ -215,7 +230,9 @@
     }).join('');
     host.innerHTML =
       `<nav class="ms-index" aria-label="Categories">${SECTIONS.map((s, i) => `<button type="button" class="ms-tab" data-i="${i}"><span>${esc(s.label)}</span></button>`).join('')}</nav>` +
-      `<div class="ms-scroll">${photos}</div>`;
+      `<div class="ms-scroll">${photos}</div>` +
+      `<a class="ms-band" href="category.html#${encodeURIComponent(SECTIONS[0].id)}" aria-label="View full archive: ${esc(SECTIONS[0].label)}">` +
+      `<span>Click here to view full archive</span></a>`;
     const tabs = [...host.querySelectorAll('.ms-tab')];
     const sc = host.querySelector('.ms-scroll');
     const items = [...sc.children];
@@ -226,6 +243,8 @@
       if (i === on) return;
       on = i;
       tabs.forEach((t, j) => { t.classList.toggle('is-on', j === i); t.setAttribute('aria-current', j === i ? 'true' : 'false'); });
+      const band = host.querySelector('.ms-band');      // the black band at the bottom opens this category's page
+      if (band && SECTIONS[i]) { band.href = `category.html#${encodeURIComponent(SECTIONS[i].id)}`; band.setAttribute('aria-label', `View full archive: ${SECTIONS[i].label}`); }
     }
     // the category of the photo filling the screen
     function update() {
@@ -339,7 +358,7 @@
     function fitTabs() {
       nav.style.setProperty('--tf', '100px'); nav.style.setProperty('--tp', '0px');
       const len = tabs.reduce((t, b) => t + b.firstChild.getBoundingClientRect().height, 0) / 100;   // in em
-      const room = host.clientHeight - 24;                                                         // keep a little photo below
+      const room = host.clientHeight - (host.querySelector('.ms-band')?.offsetHeight || 0) - 24;                                                         // keep a little photo below
       const f = Math.max(10, Math.min(17.5, (room - tabs.length * 27) / len));
       nav.style.setProperty('--tf', f.toFixed(2) + 'px');
       nav.style.setProperty('--tp', Math.round(f * 0.78) + 'px');

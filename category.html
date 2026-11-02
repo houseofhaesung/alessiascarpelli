@@ -50,6 +50,8 @@
 
     /* ---- magazine cover: big centred title, sub-sections under it ---- */
     .wp-head { padding: 0 var(--mpad); text-align: center; }
+    .wp-title .t-desk { display: none; }
+    @media (min-width: 768px) { .wp-title .t-desk { display: inline; } .wp-title .t-mob { display: none; } }
     .wp-title { font-family: "Faculty Glyphic", serif; font-weight: 400; text-transform: uppercase;
                 line-height: 1.13; margin: 0; padding-top: 36px;              /* phone: cap line at 128px */
                 font-size: min(14.6vw, 66px); }
@@ -73,9 +75,16 @@
     @media (max-width: 767.98px) {
       /* a page with only a title (Clo 3D, Pattern Making …): the title sits in the middle of
          the space above the photos (78 → 391px on a 412 phone) */
-      .no-subs .wp-head { height: 290px; display: flex; flex-direction: column; justify-content: center; }
+      /* …and the photos start at the same height as on Fashion Design (2-line title + 4 sub-pages):
+         36 + 2 title lines + 18 + 4 sub lines + 41 − 23 */
+      .no-subs .wp-head { height: calc(72px + 2.26 * min(14.6vw, 66px) + 4.96 * min(5.5vw, 25px));
+                          display: flex; flex-direction: column; justify-content: center; }
       .no-subs .wp-title { padding-top: 0; }
       .no-subs .strip { padding-top: 23px; }
+      /* Press: a 1-line title and 3 sub-pages, so one title line and one sub line lower than Fashion Design */
+      .is-press .wp-head { height: calc(54px + 2.26 * min(14.6vw, 66px) + 4.96 * min(5.5vw, 25px));   /* same as Fashion Design's head */
+                           display: flex; flex-direction: column; justify-content: center; }
+      .is-press .wp-title { padding-top: 0; }
       .strip > * { height: 67vw; overflow: hidden; }          /* same height in both columns: 276px at 412 */
       .strip img, .strip video { height: 100%; object-fit: cover; }
       .strip > .wide { grid-column: 1 / -1; }
@@ -168,7 +177,7 @@
       .footer-logo { width: 89.6vw; margin: 6.3vh 0 0 4.74vw; }
     }
   </style>
-  <script src="loader.js?v=1030l"></script>
+  <script src="loader.js?v=1102zq"></script>
 </head>
 
 <body class="font-sans">
@@ -176,15 +185,15 @@
   <!-- ================= HEADER (same as about.html) ================= -->
   <header class="fixed inset-x-0 top-0 z-50 bg-white border-b border-ink">
     <!-- desktop -->
-    <nav class="hidden lg:flex items-center h-[var(--header)] px-[var(--pad)] relative">
-      <ul class="flex gap-[2.4vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+    <nav class="hidden lg:flex items-center h-[var(--header)] px-[2.7vw] relative">
+      <ul class="flex gap-[2.4vw] font-display font-normal text-[clamp(14px,1.4vw,28px)] leading-none">
         <li><a href="category.html#selected-works" data-work-menu class="hd-link">WORK</a></li>
         <li><a href="category.html#brand-collaboration" class="hd-link" data-press>PRESS</a></li>
       </ul>
       <a href="index.html" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" aria-label="Alessia Scarpelli — home">
-        <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(240px,24.6vw,480px)] h-auto" />
+        <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(180px,16.4vw,330px)] h-auto" />
       </a>
-      <ul class="ml-auto flex gap-[1.9vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+      <ul class="ml-auto flex gap-[1.9vw] font-display font-normal text-[clamp(14px,1.4vw,28px)] leading-none">
         <li><a href="about.html" class="hd-link">ABOUT</a></li>
         <li><a href="contact.html" class="hd-link">CONTACT</a></li>
       </ul>
@@ -241,7 +250,7 @@
     <img class="footer-logo" src="images/logo-white.png" alt="Alessia Scarpelli" loading="lazy" />
   </footer>
 
-  <script src="works.js?v=1030l"></script>
+  <script src="works.js?v=1102zq"></script>
   <script>
     /* Desktop: the wheel (or a sideways trackpad swipe, or ←/→) slides the strip sideways, softly.
        Phones: the strip is a normal vertical column. */
@@ -332,7 +341,10 @@
     const $ = (id) => document.getElementById(id);
     const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     function fillHead(place, link) {
-      $('title').textContent = place.cat.title;
+      // phones can use their own line breaks (mobileTitle in works.js, lines split by |)
+      $('title').innerHTML = place.cat.mobileTitle
+        ? `<span class="t-desk">${esc(place.cat.title)}</span><span class="t-mob">${place.cat.mobileTitle.split('|').map(esc).join('<br>')}</span>`
+        : esc(place.cat.title);
       const subs = place.cat.subs || [];
       $('subnav').innerHTML = subs.map((s) =>
         `<a href="${link}#${esc(s.id)}"${place.sub && s.id === place.sub.id ? ' aria-current="page"' : ''}>${esc(s.title)}</a>`
@@ -369,6 +381,14 @@
     const isPaged = (cat) => desktop.matches && pagesOf(cat).every((x) => (x || cat).layout);
 
     let place = null, pages = [], current = -1;
+    // remember which sub-page a project was opened from, so its PREVIOUS comes back here
+    addEventListener('click', (e) => {          // on window: runs before the page-change veil takes the click
+      const a = e.target.closest && e.target.closest('a[href^="work.html#"]');
+      if (!a || !place) return;
+      const bd = a.closest('.board');
+      const sub = (bd && bd.dataset.sub) || (place.sub || place.cat).id;
+      try { sessionStorage.setItem('prev-from', JSON.stringify({ w: decodeURIComponent(a.getAttribute('href').split('#')[1]), s: sub })); } catch (_) {}
+    }, true);
     function render() {
       document.querySelector('.strip-empty')?.remove();
       const paged = isPaged(place.cat);
@@ -463,7 +483,7 @@
       place = window.findPlace(decodeURIComponent(location.hash.slice(1)).split('~')[0]);
       document.title = `${place.sub ? place.sub.title + ' — ' : ''}${place.cat.title} — Alessia Scarpelli`;
       fillHead(place, 'category.html');
-      main.classList.toggle('no-subs', !(place.cat.subs || []).length);
+      main.classList.toggle('no-subs', !(place.cat.subs || []).length); main.classList.toggle('is-press', place.cat.id === 'press');
       // PRESS in the header is pink on the Press page
       document.querySelectorAll('[data-press]').forEach((p) => (place.cat.id === 'press' ? p.setAttribute('aria-current', 'page') : p.removeAttribute('aria-current')));
       current = -1;
@@ -504,7 +524,7 @@
     show();
 
   </script>
-  <script src="workmenu.js?v=1030l"></script>
-  <script src="menu.js?v=1030l"></script>
+  <script src="workmenu.js?v=1102zq"></script>
+  <script src="menu.js?v=1102zq"></script>
 </body>
 </html>

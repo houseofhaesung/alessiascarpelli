@@ -57,6 +57,7 @@
     html, body { background: #fff; color: #0b0b0b; }
     @media (min-width: 768px) { html, body { height: 100%; overflow: hidden; overscroll-behavior: none; } }
     body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    body .site-footer { margin-top: 0 !important; }   /* web and phones: the video sits right on the black footer, no white strip */
     b, strong { font-weight: 700; }
     img { display: block; }
     .fig { margin: 0; }
@@ -102,7 +103,7 @@
     html.js .reveal.is-in { opacity: 1; transform: none; }
     @media (prefers-reduced-motion: reduce) { html.js .reveal { transition: none; transform: none; } }
   </style>
-  <script src="loader.js?v=1030l"></script>
+  <script src="loader.js?v=1102zq"></script>
 </head>
 
 <body class="font-sans">
@@ -110,15 +111,15 @@
   <!-- ================= HEADER ================= -->
   <header class="fixed inset-x-0 top-0 z-50 bg-white border-b border-ink">
     <!-- desktop -->
-    <nav class="hidden lg:flex items-center h-[var(--header)] px-[var(--pad)] relative">
-      <ul class="flex gap-[2.4vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+    <nav class="hidden lg:flex items-center h-[var(--header)] px-[2.7vw] relative">
+      <ul class="flex gap-[2.4vw] font-display font-normal text-[clamp(14px,1.4vw,28px)] leading-none">
         <li><a href="category.html#selected-works" data-work-menu class="hd-link">WORK</a></li>
         <li><a href="category.html#brand-collaboration" class="hd-link" data-press>PRESS</a></li>
       </ul>
       <a href="index.html" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" aria-label="Alessia Scarpelli — home">
-        <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(240px,24.6vw,480px)] h-auto" />
+        <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(180px,16.4vw,330px)] h-auto" />
       </a>
-      <ul class="ml-auto flex gap-[1.9vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+      <ul class="ml-auto flex gap-[1.9vw] font-display font-normal text-[clamp(14px,1.4vw,28px)] leading-none">
         <li><a href="about.html" class="hd-link">ABOUT</a></li>
         <li><a href="contact.html" class="hd-link" aria-current="page">CONTACT</a></li>
       </ul>
@@ -363,8 +364,8 @@
     goTo(0, true);
     requestAnimationFrame(() => show(0));
   </script>
-  <script src="works.js?v=1030l"></script>
-  <script src="workmenu.js?v=1030l"></script>
-  <script src="menu.js?v=1030l"></script>
+  <script src="works.js?v=1102zq"></script>
+  <script src="workmenu.js?v=1102zq"></script>
+  <script src="menu.js?v=1102zq"></script>
 </body>
 </html>

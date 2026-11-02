@@ -106,7 +106,7 @@
       .txt p + p { margin-top: 1.4em; }
     }
   </style>
-  <script src="loader.js?v=1030l"></script>
+  <script src="loader.js?v=1102zq"></script>
 </head>
 
 <body class="font-sans">
@@ -114,15 +114,15 @@
   <!-- ================= HEADER (same as about.html) ================= -->
   <header class="fixed inset-x-0 top-0 z-50 bg-white border-b border-ink">
     <!-- desktop -->
-    <nav class="hidden lg:flex items-center h-[var(--header)] px-[var(--pad)] relative">
-      <ul class="flex gap-[2.4vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+    <nav class="hidden lg:flex items-center h-[var(--header)] px-[2.7vw] relative">
+      <ul class="flex gap-[2.4vw] font-display font-normal text-[clamp(14px,1.4vw,28px)] leading-none">
         <li><a href="category.html#selected-works" data-work-menu class="hd-link">WORK</a></li>
         <li><a href="category.html#brand-collaboration" class="hd-link" data-press>PRESS</a></li>
       </ul>
       <a href="index.html" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" aria-label="Alessia Scarpelli — home">
-        <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(240px,24.6vw,480px)] h-auto" />
+        <img src="images/logo.png" alt="Alessia Scarpelli" class="w-[clamp(180px,16.4vw,330px)] h-auto" />
       </a>
-      <ul class="ml-auto flex gap-[1.9vw] text-[clamp(10.5pt,1.25vw,19.5pt)] font-bold">
+      <ul class="ml-auto flex gap-[1.9vw] font-display font-normal text-[clamp(14px,1.4vw,28px)] leading-none">
         <li><a href="about.html" class="hd-link">ABOUT</a></li>
         <li><a href="contact.html" class="hd-link">CONTACT</a></li>
       </ul>
@@ -165,7 +165,7 @@
     <div class="after"><a class="prev" href="category.html"><svg viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M39 10H2M10 2L2 10l8 8"/></svg><span>Previous</span></a></div>
   </main>
 
-  <script src="works.js?v=1030l"></script>
+  <script src="works.js?v=1102zq"></script>
   <script>
     /* Desktop: the wheel (or a sideways trackpad swipe, or ←/→) slides the strip sideways, softly.
        Phones: the strip is a normal vertical column. */
@@ -275,7 +275,8 @@
       if (p.text) return `<div class="pn txt"><div>${p.text.map((t) => `<p>${t}</p>`).join('')}</div></div>`;
       const b = p.box || [0, 0, 100, 100];
       const full = b[2] >= 99.5 && b[3] >= 99.5;
-      const pos = full ? '' : ` style="left:${b[0]}%;top:${b[1]}%;width:${b[2]}%;height:${b[3]}%"`;
+      const op = p.pos ? `object-position:${p.pos};` : '';
+      const pos = full ? (op ? ` style="${op}"` : '') : ` style="left:${b[0]}%;top:${b[1]}%;width:${b[2]}%;height:${b[3]}%;${op}"`;
       return `<figure class="pn ${full ? 'full' : 'inset'}${p.wide ? ' wide' : ''}">${img(p, eager).replace('<img ', `<img${pos} `).replace('<video ', `<video${pos} `)}</figure>`;
     }
 
@@ -286,7 +287,9 @@
       if (!w) return;
       const place = window.findPlace(w.sub || w.category);
       document.title = `${w.title} — Alessia Scarpelli`;
-      const back = `category.html#${encodeURIComponent((place.sub || place.cat).id)}`;
+      let from = null; try { from = JSON.parse(sessionStorage.getItem('prev-from') || 'null'); } catch (_) {}
+      const backId = (from && from.w === w.id && window.findPlace(from.s)) ? from.s : (place.sub || place.cat).id;
+      const back = `category.html#${encodeURIComponent(backId)}`;
       document.querySelectorAll('.prev').forEach((a) => { a.href = back; });
       $('heading').innerHTML = (w.heading || [w.year, w.title]).filter(Boolean).map((l) => `<span>${esc(l)}</span>`).join('');
       $('subtitle').innerHTML = w.subtitleLink
@@ -307,7 +310,7 @@
     show();
 
   </script>
-  <script src="workmenu.js?v=1030l"></script>
-  <script src="menu.js?v=1030l"></script>
+  <script src="workmenu.js?v=1102zq"></script>
+  <script src="menu.js?v=1102zq"></script>
 </body>
 </html>

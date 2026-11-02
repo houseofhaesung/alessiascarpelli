@@ -22,7 +22,7 @@
     }
     .wm-panel.is-open { transform: none; }
     .wm-top { height: var(--header, clamp(72px, 10.4vh, 116px)); display: flex; align-items: center; padding-left: var(--pad, 3.6vw); }
-    .wm-close { font-weight: 700; font-size: clamp(10.5pt, 1.25vw, 19.5pt); letter-spacing: 0; color: #0b0b0b; transition: color .2s ease; }
+    .wm-close { font-family: "Faculty Glyphic", serif; font-weight: 400; font-size: clamp(14px, 1.4vw, 28px); line-height: 1; letter-spacing: 0; color: #0b0b0b; transition: color .2s ease; }
     .wm-close:hover:not(.is-fresh) { color: #FF3686; }
     .hd-link { color: #0b0b0b; transition: color .2s ease; }
     .hd-link:hover, .hd-link:focus-visible, .hd-link[aria-current="page"] { color: #FF3686; outline: none; }
