@@ -66,7 +66,7 @@
       .sp-track { position: absolute; top: 0; bottom: 0; left: 0; will-change: transform; }
       .sp-cover { position: absolute; left: 0; top: 0; bottom: 0; background: #fff; }
       .sp-photo { position: absolute; top: 0; bottom: 0; display: block; overflow: hidden; background: #f2f2f2; -webkit-user-drag: none; }
-      .sp-photo img, .sp-photo video { width: 100%; height: 100%; object-fit: cover; pointer-events: none;
+      .sp-photo img, .sp-photo video { width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; pointer-events: none;
                       transition: transform .9s cubic-bezier(.22, 1, .36, 1); }
       .sp-photo:hover img { transform: scale(1.02); }
       .sp-photo:focus-visible { outline: 3px solid #FF3686; outline-offset: -3px; }
@@ -141,7 +141,7 @@
     }
 
   </style>
-  <script src="loader.js?v=1102zy"></script>
+  <script src="loader.js?v=1103c"></script>
 </head>
 
 <body class="font-sans">
@@ -191,9 +191,9 @@
   <main id="mspines" class="mspines" aria-label="Work, by category"></main>
 
   <!-- Order matters: works.js first (the content), then the scripts that use it -->
-  <script src="works.js?v=1102zy"></script>
-  <script src="spines.js?v=1102zy"></script>
-  <script src="workmenu.js?v=1102zy"></script>
-  <script src="menu.js?v=1102zy"></script>
+  <script src="works.js?v=1103c"></script>
+  <script src="spines.js?v=1103c"></script>
+  <script src="workmenu.js?v=1103c"></script>
+  <script src="menu.js?v=1103c"></script>
 </body>
 </html>

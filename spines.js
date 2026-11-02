@@ -98,6 +98,14 @@
                                                         // (the black band lies over the first photo: no extra gap)
       sec.photos.forEach((a, k) => { const pw = a.dataset.r ? Math.round(H * a.dataset.r) : PW; a.style.left = x + 'px'; a.style.width = pw + 'px'; x += pw + (k < sec.photos.length - 1 ? G : 0); });
     });                                                 // …and the next label; G only between photos
+    // the last category must be able to open fully: if its photos are too few to fill the screen,
+    // they are widened a little (no empty space at the end)
+    const last = sections[sections.length - 1], short = (openAt[openAt.length - 1] || 0) - (x - VW);
+    if (short > 0 && last.photos.length) {
+      const add = short / last.photos.length;
+      last.photos.forEach((a, k) => { a.style.width = (parseFloat(a.style.width) + add) + 'px'; a.style.left = (parseFloat(a.style.left) + add * k) + 'px'; });
+      x += short;
+    }
     max = Math.max(0, x - VW);
     target = Math.max(openAt[0] || 0, Math.min(target, max));
   }
