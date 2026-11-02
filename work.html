@@ -100,13 +100,14 @@
       .pn.wide { width: calc(100vw - var(--side)); }
       .pn.inset { padding: 0; }
       .pn img, .pn video { position: absolute; object-fit: cover; height: auto; }
-      .pn.full img, .pn.full video { inset: 0; width: 100%; height: 100%; }
+      .pn.full img, .pn.full video { inset: 0; width: 100%; height: 100%; object-position: 50% 12%; }   /* when the screen is wider than the design, crop from the bottom, never the head */
+      .pn.inset img, .pn.inset video { object-fit: contain; }   /* photos on white: always whole, inside their box */
       .txt { padding: min(7.9vh, 4.43vw) min(2.97vw, 5.3vh) 0; font-size: min(1.042vw, 1.852vh); line-height: 1.4; }
       .txt > div { max-width: 25.2vw; }
       .txt p + p { margin-top: 1.4em; }
     }
   </style>
-  <script src="loader.js?v=1102zq"></script>
+  <script src="loader.js?v=1102zt"></script>
 </head>
 
 <body class="font-sans">
@@ -165,7 +166,7 @@
     <div class="after"><a class="prev" href="category.html"><svg viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M39 10H2M10 2L2 10l8 8"/></svg><span>Previous</span></a></div>
   </main>
 
-  <script src="works.js?v=1102zq"></script>
+  <script src="works.js?v=1102zt"></script>
   <script>
     /* Desktop: the wheel (or a sideways trackpad swipe, or ←/→) slides the strip sideways, softly.
        Phones: the strip is a normal vertical column. */
@@ -310,7 +311,7 @@
     show();
 
   </script>
-  <script src="workmenu.js?v=1102zq"></script>
-  <script src="menu.js?v=1102zq"></script>
+  <script src="workmenu.js?v=1102zt"></script>
+  <script src="menu.js?v=1102zt"></script>
 </body>
 </html>
