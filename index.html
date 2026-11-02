@@ -42,7 +42,7 @@
       --pad: clamp(20px, 3.6vw, 72px);
       --mpad: clamp(20px, 6.5vw, 32px);   /* phone side margin */
       --col: 36.1vw;
-      --header: clamp(72px, 10.4vh, 116px);
+      --header: clamp(72px, 11.57vh, 130px);   /* same as the other pages: 125px at 1080 */
     }
     html, body { height: 100%; background: #fff; color: #0b0b0b; }
     body { margin: 0; overflow: hidden; -webkit-font-smoothing: antialiased; }
@@ -58,7 +58,7 @@
         --gap: 0.6vw;                                  /* 12px at 1920 between two photos; labels touch photos */
         --band: 3.85vw;                                /* 74px at 1920: the VIEW FULL ARCHIVE band */
         display: block; position: fixed; left: 0; right: 0; bottom: 0;
-        top: max(72px, 10.65vh);                       /* just under the header: 115px at 1080 */
+        top: var(--header);                            /* just under the header, where the other pages start: 125px at 1080 */
         overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: none;
         opacity: 0; transition: opacity .8s ease .1s;
       }
@@ -141,7 +141,7 @@
     }
 
   </style>
-  <script src="loader.js?v=1102zt"></script>
+  <script src="loader.js?v=1102zw"></script>
 </head>
 
 <body class="font-sans">
@@ -191,9 +191,9 @@
   <main id="mspines" class="mspines" aria-label="Work, by category"></main>
 
   <!-- Order matters: works.js first (the content), then the scripts that use it -->
-  <script src="works.js?v=1102zt"></script>
-  <script src="spines.js?v=1102zt"></script>
-  <script src="workmenu.js?v=1102zt"></script>
-  <script src="menu.js?v=1102zt"></script>
+  <script src="works.js?v=1102zw"></script>
+  <script src="spines.js?v=1102zw"></script>
+  <script src="workmenu.js?v=1102zw"></script>
+  <script src="menu.js?v=1102zw"></script>
 </body>
 </html>

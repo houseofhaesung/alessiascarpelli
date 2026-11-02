@@ -155,11 +155,11 @@
       .cat .hstage { position: sticky; top: 0; height: 102.6vh; overflow: hidden; }
       html .site-footer { margin-top: 2.22vh; }
     }
-    @media (max-width: 767.98px) { .cat { border-bottom: 1px solid #0b0b0b; } }
+
 
     /* ---- black footer (same as the About page) ---- */
     .site-footer { background: #0b0b0b; color: #fff; display: flex; flex-direction: column;
-                   margin-top: 24px; padding: 56px var(--mpad) 48px; }
+                   margin-top: 0; padding: 56px var(--mpad) 48px; }
     .contacts { display: flex; gap: 32px; }
     .contact-col { font-size: clamp(15px, min(1.38vw, 2.45vh), 28px); line-height: 1.21; }
     .contact-col dt { font-family: "Faculty Glyphic", serif; font-size: 1.24em; line-height: 1.1; }
@@ -169,15 +169,20 @@
     .contact-col dd a:hover, .contact-col dd a:focus-visible { text-decoration: underline; outline: none; }
     .contact-col address { font-style: normal; }
     .footer-logo { width: 100%; height: auto; margin-top: 56px; }
+    .contact-col dd a[href^="mailto:"] { text-decoration: underline; text-decoration-thickness: 1px; }
     @media (min-width: 768px) {
-      .site-footer { padding: 6.67vh 0 10.45vh; }
+      /* measured from the 1920 design: headings 32px, details 20px, logo 1722px wide */
+      .site-footer { padding: 5.4vw 0 5.2vw; }
       .contacts { gap: 0; padding-left: 4.17vw; }
-      .contact-col { width: 14.63vw; }
-      .contact-col:last-child { width: auto; }
-      .footer-logo { width: 89.6vw; margin: 6.3vh 0 0 4.74vw; }
+      .contact-col { width: auto; font-size: max(13px, 1.04vw); line-height: 1.6; }
+      .contact-col dt { font-size: 1.6em; line-height: 1.2; }
+      .contact-col dt:not(:first-child) { margin-top: 1.1em; }
+      .footer-logo { width: 89.6vw; margin: 4.4vw 0 0 4.74vw; }
+      .cat .hwrap { border-bottom: 0; }          /* no line between the photos and the footer */
+      html .site-footer { margin-top: 0; }
     }
   </style>
-  <script src="loader.js?v=1102zt"></script>
+  <script src="loader.js?v=1102zw"></script>
 </head>
 
 <body class="font-sans">
@@ -250,7 +255,7 @@
     <img class="footer-logo" src="images/logo-white.png" alt="Alessia Scarpelli" loading="lazy" />
   </footer>
 
-  <script src="works.js?v=1102zt"></script>
+  <script src="works.js?v=1102zw"></script>
   <script>
     /* Desktop: the wheel (or a sideways trackpad swipe, or ←/→) slides the strip sideways, softly.
        Phones: the strip is a normal vertical column. */
@@ -524,7 +529,7 @@
     show();
 
   </script>
-  <script src="workmenu.js?v=1102zt"></script>
-  <script src="menu.js?v=1102zt"></script>
+  <script src="workmenu.js?v=1102zw"></script>
+  <script src="menu.js?v=1102zw"></script>
 </body>
 </html>
