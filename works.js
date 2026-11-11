@@ -578,7 +578,7 @@ window.WORKS = [
     subtitle: 'Editorial Photoshoot',
     category: 'styling-art-direction',
     cover: { src: 'images/work/stacy-for-love-01.jpg', w: 1, h: 1, alt: 'Stacy for Love' },
-    description: ['Created a photoshoot exploring gender, inclusivity and different ideas of beauty and relationships. The use of fur garments brought together a diverse cast, while a glittering set and softly blurred atmosphere referenced the dreamlike visual language of the 1980s. Blue and pink, reality and fantasy, and other contrasting elements coexist throughout the imagery.'],
+    description: ['Styled a photoshoot, with art direction by Gaia Serru, exploring gender, inclusivity and different ideas of beauty and relationships. The use of fur garments brought together a diverse cast, while a glittering set and softly blurred atmosphere referenced the dreamlike visual language of the 1980s. Blue and pink, reality and fantasy, and other contrasting elements coexist throughout the imagery.'],
     panels: [
       { src: 'images/work/stacy-for-love-01.jpg', w: 646, h: 954, box: [0.0, 0.0, 100.0, 100.0] },
       { src: 'images/work/stacy-for-love-02.jpg', w: 639, h: 954, box: [0.0, 0.0, 100.0, 100.0] },
